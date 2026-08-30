@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CRMGMT v0.1 - Executive Logistics & Courier Management</title>
-  <link rel="icon" type="image/png" href="https://images.squarespace-cdn.com/content/v1/6268bb18d74de925d9ff1bb9/afb1eaa4-6ab6-4d8a-b4f7-6ccd0a0776d9/Saveetha+simats.png" />
-  
+  <link rel="icon" type="image/png"
+    href="https://images.squarespace-cdn.com/content/v1/6268bb18d74de925d9ff1bb9/afb1eaa4-6ab6-4d8a-b4f7-6ccd0a0776d9/Saveetha+simats.png" />
+
   <!-- CDNs for Rich Visual Experience -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -16,6 +18,7 @@
   <link rel="stylesheet" href="css/login.css" />
   <link rel="stylesheet" href="css/dashboard.css" />
 </head>
+
 <body>
 
   <!-- Toast Notification Container -->
@@ -30,10 +33,12 @@
     <!-- Left Pane: Login Form -->
     <div class="auth-left-pane">
       <div class="auth-box">
-        
+
         <!-- Saveetha Official Header Logo -->
         <div class="auth-header-logo">
-          <img src="https://images.squarespace-cdn.com/content/v1/6268bb18d74de925d9ff1bb9/afb1eaa4-6ab6-4d8a-b4f7-6ccd0a0776d9/Saveetha+simats.png" alt="Saveetha Institute of Medical and Technical Sciences" />
+          <img
+            src="https://images.squarespace-cdn.com/content/v1/6268bb18d74de925d9ff1bb9/afb1eaa4-6ab6-4d8a-b4f7-6ccd0a0776d9/Saveetha+simats.png"
+            alt="Saveetha Institute of Medical and Technical Sciences" />
         </div>
 
         <!-- Section: Login Form -->
@@ -45,7 +50,8 @@
             <div class="form-group">
               <label class="form-label" for="login-email">Email Address or Username<span class="req">*</span></label>
               <div class="input-wrapper">
-                <input type="text" id="login-email" class="form-input" placeholder="Enter your mail address or username" required />
+                <input type="text" id="login-email" class="form-input" placeholder="Enter your mail address or username"
+                  required />
               </div>
             </div>
 
@@ -54,7 +60,8 @@
               <div class="input-wrapper">
                 <input type="password" id="login-password" class="form-input" placeholder="Enter password" required />
                 <button type="button" id="login-pw-toggle" class="pw-toggle-btn" title="Toggle password visibility">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
@@ -67,7 +74,9 @@
                 <input type="checkbox" id="login-remember" checked />
                 <span>Remember me</span>
               </label>
-              <a href="javascript:void(0)" class="forgot-pw-link" onclick="CRMGMT.toast('Password reset link dispatched to registered email.', 'info')">Forgot your password ?</a>
+              <a href="javascript:void(0)" class="forgot-pw-link"
+                onclick="CRMGMT.toast('Password reset link dispatched to registered email.', 'info')">Forgot your
+                password ?</a>
             </div>
 
             <button type="submit" id="btn-login-submit" class="btn-login-main">Log In</button>
@@ -79,16 +88,21 @@
 
           <button type="button" id="btn-google-login" class="btn-google-login">
             <svg viewBox="0 0 24 24">
-              <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/>
-              <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
-              <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
-              <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+              <path fill="#EA4335"
+                d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z" />
+              <path fill="#4285F4"
+                d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z" />
+              <path fill="#FBBC05"
+                d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z" />
+              <path fill="#34A853"
+                d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z" />
             </svg>
             <span>Sign up with google</span>
           </button>
 
           <div class="auth-footer">
-            Don't have an account ? <a href="javascript:void(0)" onclick="window.switchAuthMode('register')">Register here</a>
+            Don't have an account ? <a href="javascript:void(0)" onclick="window.switchAuthMode('register')">Register
+              here</a>
           </div>
 
 
@@ -112,7 +126,8 @@
 
             <div class="form-group">
               <label class="form-label">Password<span class="req">*</span></label>
-              <input type="password" id="reg-password" class="form-input" placeholder="Create strong password" required />
+              <input type="password" id="reg-password" class="form-input" placeholder="Create strong password"
+                required />
             </div>
 
             <div class="form-group">
@@ -151,21 +166,22 @@
        VIEW 2: ADMINKIT PRO MAIN PORTAL (Faithful to Reference Image 1)
        ========================================================================= -->
   <div id="view-main-app" class="app-view app-layout" style="display: none;">
-    
+
     <!-- Left Sidebar (Dark Navy Theme) -->
     <aside id="main-sidebar" class="sidebar">
       <!-- Brand Header -->
       <div class="sidebar-brand">
-        <span>AdminKit</span>
-        <span class="brand-pro-badge">PRO</span>
+        <span>SSE CRMGMT V0.1 ADMIN PANEL</span>
+        <span class="brand-pro-badge">MAIN DASHBAORD</span>
       </div>
 
       <!-- User Card (Clickable to Edit Profile Picture) -->
       <div class="sidebar-user" onclick="OperationsModule.openPfpModal()" title="Click to customize profile picture">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="sidebar-avatar" />
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+          alt="Avatar" class="sidebar-avatar" />
         <div class="sidebar-user-info">
           <div class="sidebar-user-name">
-            <span class="user-name-display">SIMATS Chief Administrator</span>
+            <span class="user-name-display">SIMATS Administrator</span>
             <span style="font-size: 0.7rem; color: #94a3b8;">✎</span>
           </div>
           <div class="sidebar-user-role user-role-display">Super Admin</div>
@@ -178,13 +194,25 @@
 
         <!-- Customer Overview (Customer Only) -->
         <a href="#customer_dashboard" class="sidebar-link nav-customer-only" data-view="customer_dashboard">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
           <span>Customer Overview</span>
         </a>
 
         <!-- Admin Dashboards Dropdown (Admin Only) -->
         <a href="#dashboard" class="sidebar-link active nav-admin-only" data-view="dashboard">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
           <span>Admin Analytics</span>
           <span style="margin-left: auto; font-size: 0.75rem;">⌄</span>
         </a>
@@ -198,58 +226,122 @@
         </div>
 
         <a href="#shipments" class="sidebar-link" data-view="shipments">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+            </path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
           <span>Consignments Master</span>
         </a>
 
         <a href="#tracking" class="sidebar-link" data-view="tracking">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
           <span>Live GPS & Tracking</span>
         </a>
 
         <a href="#scanner" class="sidebar-link nav-agent-only" data-view="scanner">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="7" y="7" width="10" height="10"></rect></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+            <rect x="7" y="7" width="10" height="10"></rect>
+          </svg>
           <span>Hub Scanner & POD</span>
         </a>
 
         <a href="#calculator" class="sidebar-link" data-view="calculator">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+            <line x1="8" y1="6" x2="16" y2="6"></line>
+            <line x1="16" y1="14" x2="16" y2="18"></line>
+            <path d="M8 10h.01"></path>
+            <path d="M12 10h.01"></path>
+            <path d="M16 10h.01"></path>
+            <path d="M8 14h.01"></path>
+            <path d="M12 14h.01"></path>
+            <path d="M8 18h.01"></path>
+            <path d="M12 18h.01"></path>
+          </svg>
           <span>Rate & Tariff Calc</span>
         </a>
 
         <!-- Invoices (Customer & Enterprise) -->
         <a href="#invoices" class="sidebar-link nav-customer-only" data-view="invoices">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
           <span>Invoices & Statements</span>
         </a>
 
         <!-- Bulk CSV Dispatch -->
         <a href="#bulk_dispatch" class="sidebar-link nav-customer-only" data-view="bulk_dispatch">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
           <span>Bulk CSV Booking</span>
         </a>
 
         <!-- User Accounts (Admin Only) -->
         <a href="#users" class="sidebar-link nav-admin-only" data-view="users">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
           <span>User Accounts</span>
           <span class="badge badge-pro" style="margin-left: auto;">Admin</span>
         </a>
 
         <div class="sidebar-header">Components</div>
         <div class="sidebar-link" onclick="CRMGMT.toast('UI Components Library Loaded', 'info')">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
           <span>UI Elements</span>
         </div>
         <div class="sidebar-link" onclick="CRMGMT.toast('FontAwesome & Lucide Icons Active', 'info')">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
           <span>Icons</span>
           <span class="badge badge-pro" style="margin-left: auto;">1.500+</span>
         </div>
 
         <div class="sidebar-header" style="margin-top: 10px;">Account</div>
-        <a href="javascript:void(0)" class="sidebar-link" onclick="localStorage.clear(); CRMGMT.navigate('login'); CRMGMT.toast('Logged out successfully', 'info');">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <a href="javascript:void(0)" class="sidebar-link"
+          onclick="localStorage.clear(); CRMGMT.navigate('login'); CRMGMT.toast('Logged out successfully', 'info');">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
           <span>Log Out</span>
         </a>
       </div>
@@ -257,25 +349,37 @@
 
     <!-- Main Wrapper -->
     <div class="main-wrapper">
-      
+
       <!-- Top Navbar (Matching Reference Image 1) -->
       <header class="top-navbar">
         <div class="navbar-left">
           <button id="sidebar-toggle-btn" class="nav-toggle-btn" title="Toggle Navigation">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
           </button>
 
           <div class="nav-search-box">
-            <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" class="nav-search-input" placeholder="Search tracking ID, consignee, or hub..." onkeyup="if (event.key === 'Enter') CRMGMT.navigate('tracking', { trackingId: this.value.trim() })" />
+            <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="nav-search-input" placeholder="Search tracking ID, consignee, or hub..."
+              onkeyup="if (event.key === 'Enter') CRMGMT.navigate('tracking', { trackingId: this.value.trim() })" />
           </div>
 
           <div class="nav-menu-links">
-            <div class="nav-menu-item" onclick="CRMGMT.toast('Mega Menu: Quick routes to Hubs, Fleet, Manifest, Reports', 'info')">
+            <div class="nav-menu-item"
+              onclick="CRMGMT.toast('Mega Menu: Quick routes to Hubs, Fleet, Manifest, Reports', 'info')">
               <span>Mega Menu</span>
               <span>⌄</span>
             </div>
-            <div class="nav-menu-item" onclick="CRMGMT.toast('Documentation & API References: Supabase PostgreSQL 15 & Native C17 Core', 'info')">
+            <div class="nav-menu-item"
+              onclick="CRMGMT.toast('Documentation & API References: Supabase PostgreSQL 15 & Native C17 Core', 'info')">
               <span>Resources</span>
               <span>⌄</span>
             </div>
@@ -285,7 +389,9 @@
         <div class="navbar-right">
           <!-- Currency Selector Dropdown -->
           <div style="display: flex; align-items: center; margin-right: 8px;">
-            <select id="currency-select" class="form-input" style="padding: 4px 8px; font-size: 0.78rem; font-weight: 700; height: 32px; border-radius: 4px; background: #ffffff; color: #1e293b;" onchange="CRMGMT.setCurrency(this.value)">
+            <select id="currency-select" class="form-input"
+              style="padding: 4px 8px; font-size: 0.78rem; font-weight: 700; height: 32px; border-radius: 4px; background: #ffffff; color: #1e293b;"
+              onchange="CRMGMT.setCurrency(this.value)">
               <option value="INR">₹ INR</option>
               <option value="USD">$ USD</option>
               <option value="EUR">€ EUR</option>
@@ -293,8 +399,13 @@
           </div>
 
           <!-- Notification Bell -->
-          <button id="btn-notif-toggle" class="nav-icon-btn" title="Notifications" onclick="CRMGMT.toggleNotifications()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <button id="btn-notif-toggle" class="nav-icon-btn" title="Notifications"
+            onclick="CRMGMT.toggleNotifications()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
             <span id="notif-badge-count" class="nav-icon-badge">2</span>
           </button>
 
@@ -302,7 +413,9 @@
           <div id="notification-dropdown" class="notification-dropdown">
             <div class="notif-header">
               <span>System & Logistics Alerts</span>
-              <span style="font-size: 0.72rem; color: #94a3b8; cursor: pointer;" onclick="CRMGMT.state.notifications.forEach(n=>n.unread=false); CRMGMT.renderNotifications();">Mark all read</span>
+              <span style="font-size: 0.72rem; color: #94a3b8; cursor: pointer;"
+                onclick="CRMGMT.state.notifications.forEach(n=>n.unread=false); CRMGMT.renderNotifications();">Mark all
+                read</span>
             </div>
             <div id="notif-list-container">
               <!-- Injected by app.js -->
@@ -310,8 +423,12 @@
           </div>
 
           <!-- Chat Messages -->
-          <button class="nav-icon-btn" title="Messages" onclick="CRMGMT.toast('Fleet Comms: All telemetry channels active', 'info')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <button class="nav-icon-btn" title="Messages"
+            onclick="CRMGMT.toast('Fleet Comms: All telemetry channels active', 'info')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
           </button>
 
           <!-- Region Flag -->
@@ -320,13 +437,22 @@
           </button>
 
           <!-- Fullscreen Toggle -->
-          <button class="nav-icon-btn" title="Expand View" onclick="if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen();">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+          <button class="nav-icon-btn" title="Expand View"
+            onclick="if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen();">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
           </button>
 
           <!-- User Profile (Click to Edit PFP) -->
-          <div class="nav-avatar-btn" onclick="OperationsModule.openPfpModal()" title="Click to customize profile picture">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="nav-avatar-img" />
+          <div class="nav-avatar-btn" onclick="OperationsModule.openPfpModal()"
+            title="Click to customize profile picture">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+              alt="Avatar" class="nav-avatar-img" />
           </div>
         </div>
       </header>
@@ -341,11 +467,13 @@
           <div class="dash-header-row">
             <div>
               <h2 class="dash-title">Customer <span>Logistics Hub</span></h2>
-              <div style="font-size: 0.85rem; color: #64748b;">Consignment Dispatch • Live Route Telemetry • GST Tax Invoices • Address Book</div>
+              <div style="font-size: 0.85rem; color: #64748b;">Consignment Dispatch • Live Route Telemetry • GST Tax
+                Invoices • Address Book</div>
             </div>
             <div class="dash-actions">
               <button class="btn btn-outline" onclick="CRMGMT.navigate('bulk_dispatch')">📁 Bulk CSV Import</button>
-              <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ Quick Dispatch</button>
+              <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ Quick
+                Dispatch</button>
             </div>
           </div>
 
@@ -402,7 +530,8 @@
             <div class="card" style="padding: 20px;">
               <div class="card-header" style="margin-bottom: 16px;">
                 <h3 class="card-title">Schedule Urgent Pickup</h3>
-                <div class="card-subtitle">On-demand courier pickup from your Saveetha campus laboratory or office.</div>
+                <div class="card-subtitle">On-demand courier pickup from your Saveetha campus laboratory or office.
+                </div>
               </div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div class="form-group">
@@ -423,7 +552,8 @@
                   </select>
                 </div>
               </div>
-              <button class="btn btn-primary" style="margin-top: 10px; width: 100%;" onclick="CRMGMT.toast('Pickup driver dispatched! ETA 18 minutes to SIMATS Zone 1.', 'success')">
+              <button class="btn btn-primary" style="margin-top: 10px; width: 100%;"
+                onclick="CRMGMT.toast('Pickup driver dispatched! ETA 18 minutes to SIMATS Zone 1.', 'success')">
                 Request Instant Van Pickup
               </button>
             </div>
@@ -435,12 +565,15 @@
                 <div class="card-subtitle">Frequent delivery and dispatch destinations.</div>
               </div>
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div class="address-book-pill selected" onclick="CRMGMT.toast('Selected: Apollo Super Specialty Hospital', 'info')">
-                  <div style="font-weight: 700; color: #1e293b; font-size: 0.84rem;">Apollo Super Specialty Hospital (Greams Rd, Chennai)</div>
+                <div class="address-book-pill selected"
+                  onclick="CRMGMT.toast('Selected: Apollo Super Specialty Hospital', 'info')">
+                  <div style="font-weight: 700; color: #1e293b; font-size: 0.84rem;">Apollo Super Specialty Hospital
+                    (Greams Rd, Chennai)</div>
                   <div style="font-size: 0.74rem; color: #64748b;">Medical Consignments • PIN: 600006</div>
                 </div>
                 <div class="address-book-pill" onclick="CRMGMT.toast('Selected: Infosys STPI Hub Bangalore', 'info')">
-                  <div style="font-weight: 700; color: #1e293b; font-size: 0.84rem;">Infosys STPI Development Hub (Electronic City, Bangalore)</div>
+                  <div style="font-weight: 700; color: #1e293b; font-size: 0.84rem;">Infosys STPI Development Hub
+                    (Electronic City, Bangalore)</div>
                   <div style="font-size: 0.74rem; color: #64748b;">Tech Equipment &amp; Hardware • PIN: 560100</div>
                 </div>
               </div>
@@ -449,16 +582,20 @@
 
           <!-- Bottom: Recent Consignments Table -->
           <div class="card" style="padding: 0; overflow-x: auto;">
-            <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+            <div
+              style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
               <div>
                 <h3 class="card-title" style="font-size: 1rem;">My Recent Consignments</h3>
-                <div class="card-subtitle">Live status tracking, printable thermal barcodes, and official GST tax invoices.</div>
+                <div class="card-subtitle">Live status tracking, printable thermal barcodes, and official GST tax
+                  invoices.</div>
               </div>
-              <button class="btn btn-outline btn-sm" onclick="OperationsModule.loadCustomerOverview()">Refresh Status</button>
+              <button class="btn btn-outline btn-sm" onclick="OperationsModule.loadCustomerOverview()">Refresh
+                Status</button>
             </div>
             <table class="dash-table" style="width: 100%; border-collapse: collapse;">
               <thead>
-                <tr style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.78rem; text-transform: uppercase; color: #64748b;">
+                <tr
+                  style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.78rem; text-transform: uppercase; color: #64748b;">
                   <th style="padding: 12px 16px;">Tracking ID</th>
                   <th style="padding: 12px 16px;">Consignee &amp; PIN</th>
                   <th style="padding: 12px 16px;">Status</th>
@@ -478,28 +615,36 @@
              SUBVIEW 1: ANALYTICS DASHBOARD (Exact Replica of Reference Image 1)
              =================================================================== -->
         <div id="subview-dashboard" class="dashboard-subview view-section active">
-          
+
           <!-- Header Row -->
           <div class="dash-header-row">
             <h2 class="dash-title">Analytics <span>Dashboard</span></h2>
             <div class="dash-actions">
-              <button class="btn btn-outline" onclick="CRMGMT.toast('Share invite link copied to clipboard.', 'info')">Invite a Friend</button>
-              <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ New Shipment</button>
+              <button class="btn btn-outline"
+                onclick="CRMGMT.toast('Share invite link copied to clipboard.', 'info')">Invite a Friend</button>
+              <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ New
+                Shipment</button>
             </div>
           </div>
 
           <!-- Top Analytics Grid: 4 Cards (2x2) + Spline Chart -->
           <div class="analytics-top-grid">
-            
+
             <!-- 4 Metric Cards (Live Real Logistics Data) -->
             <div class="metric-cards-2x2">
-              
+
               <!-- Card 1: Active Consignments -->
               <div class="card">
                 <div class="metric-card-header">
                   <span class="metric-title">Active Consignments</span>
                   <div class="metric-icon-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2">
+                      <rect x="1" y="3" width="15" height="13"></rect>
+                      <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                      <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                      <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
                   </div>
                 </div>
                 <div id="metric-active-val" class="metric-value">4</div>
@@ -513,7 +658,11 @@
                 <div class="metric-card-header">
                   <span class="metric-title">Freight Revenue</span>
                   <div class="metric-icon-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
                   </div>
                 </div>
                 <div id="metric-rev-val" class="metric-value" data-inr-value="1285.0">₹1,285.00</div>
@@ -527,7 +676,11 @@
                 <div class="metric-card-header">
                   <span class="metric-title">On-Time SLA Rate</span>
                   <div class="metric-icon-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
                   </div>
                 </div>
                 <div id="metric-sla-val" class="metric-value">99.4%</div>
@@ -541,7 +694,12 @@
                 <div class="metric-card-header">
                   <span class="metric-title">Total Cargo Weight</span>
                   <div class="metric-icon-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2">
+                      <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                      </path>
+                    </svg>
                   </div>
                 </div>
                 <div id="metric-weight-val" class="metric-value">8.6 kg</div>
@@ -574,7 +732,7 @@
 
           <!-- Bottom Row: Calendar + Real-Time Map + Donut Chart -->
           <div class="analytics-bottom-grid">
-            
+
             <!-- Calendar Card -->
             <div class="card calendar-card">
               <div class="calendar-header-nav">
@@ -636,13 +794,16 @@
             <h2 class="dash-title">Shipments <span>Management</span></h2>
             <div class="dash-actions">
               <button id="btn-export-csv" class="btn btn-outline">Export CSV</button>
-              <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ Create Consignment</button>
+              <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ Create
+                Consignment</button>
             </div>
           </div>
 
           <div class="card" style="padding: 0; overflow: hidden;">
-            <div style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #fafbfc;">
-              <input type="text" placeholder="Filter by Tracking ID, Sender, Recipient..." class="form-input" style="max-width: 320px;" oninput="
+            <div
+              style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #fafbfc;">
+              <input type="text" placeholder="Filter by Tracking ID, Sender, Recipient..." class="form-input"
+                style="max-width: 320px;" oninput="
                 const query = this.value.toLowerCase();
                 const filtered = OperationsModule.shipments.filter(s => 
                   s.tracking_id.toLowerCase().includes(query) || 
@@ -650,12 +811,13 @@
                   s.recipient_name.toLowerCase().includes(query)
                 );
                 OperationsModule.renderShipmentsTable(filtered);
-              "/>
+              " />
               <button class="btn btn-outline btn-sm" onclick="OperationsModule.loadShipments()">Refresh Data</button>
             </div>
 
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
-              <thead style="background-color: #f8fafc; border-bottom: 1px solid var(--border-color); color: #64748b; font-weight: 700;">
+              <thead
+                style="background-color: #f8fafc; border-bottom: 1px solid var(--border-color); color: #64748b; font-weight: 700;">
                 <tr>
                   <th style="padding: 12px 16px;">Tracking ID</th>
                   <th style="padding: 12px 16px;">Sender</th>
@@ -684,25 +846,32 @@
           <!-- Tracking Search Bar -->
           <div class="card" style="margin-bottom: 24px; padding: 20px;">
             <div style="display: flex; gap: 12px; max-width: 600px;">
-              <input type="text" id="input-track-id" class="form-input" placeholder="Enter Tracking ID (e.g. CR-68D3F12A-B4-9F81)" value="CR-68D3F12A-B4-9F81" />
+              <input type="text" id="input-track-id" class="form-input"
+                placeholder="Enter Tracking ID (e.g. CR-68D3F12A-B4-9F81)" value="CR-68D3F12A-B4-9F81" />
               <button id="btn-track-lookup" class="btn btn-primary" style="min-width: 120px;">Track Parcel</button>
             </div>
             <div style="margin-top: 10px; font-size: 0.76rem; color: #64748b;">
-              Try demo tracking numbers: 
-              <a href="javascript:void(0)" onclick="TrackingModule.lookup('CR-68D3F12A-B4-9F81')">CR-68D3F12A-B4-9F81 (Chennai)</a> | 
-              <a href="javascript:void(0)" onclick="TrackingModule.lookup('CR-68D40E1B-C2-4E29')">CR-68D40E1B-C2-4E29 (In Transit)</a>
+              Try demo tracking numbers:
+              <a href="javascript:void(0)" onclick="TrackingModule.lookup('CR-68D3F12A-B4-9F81')">CR-68D3F12A-B4-9F81
+                (Chennai)</a> |
+              <a href="javascript:void(0)" onclick="TrackingModule.lookup('CR-68D40E1B-C2-4E29')">CR-68D40E1B-C2-4E29
+                (In Transit)</a>
             </div>
           </div>
 
           <!-- Tracking Result View -->
           <div id="tracking-result-box" style="display: none;">
-            
+
             <!-- Meta Header Card -->
             <div class="card" style="margin-bottom: 24px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
                 <div>
-                  <span style="font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Tracking Number</span>
-                  <div id="track-disp-id" style="font-size: 1.3rem; font-weight: 800; font-family: var(--font-mono); color: #3b7ddd;"></div>
+                  <span
+                    style="font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Tracking
+                    Number</span>
+                  <div id="track-disp-id"
+                    style="font-size: 1.3rem; font-weight: 800; font-family: var(--font-mono); color: #3b7ddd;"></div>
                 </div>
                 <div>
                   <span class="badge badge-success" id="track-disp-status">OUT FOR DELIVERY</span>
@@ -740,12 +909,14 @@
               </div>
 
               <!-- Key Info Grid -->
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.84rem;">
+              <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.84rem;">
                 <div><strong style="color: #64748b;">Sender:</strong> <span id="track-disp-sender">-</span></div>
                 <div><strong style="color: #64748b;">Recipient:</strong> <span id="track-disp-recip">-</span></div>
                 <div><strong style="color: #64748b;">Destination:</strong> <span id="track-disp-dest">-</span></div>
                 <div><strong style="color: #64748b;">Weight:</strong> <span id="track-disp-weight">-</span></div>
-                <div><strong style="color: #64748b;">Estimated Delivery:</strong> <span id="track-disp-eta">-</span></div>
+                <div><strong style="color: #64748b;">Estimated Delivery:</strong> <span id="track-disp-eta">-</span>
+                </div>
               </div>
 
               <div id="pod-action-container" style="margin-top: 20px;"></div>
@@ -755,7 +926,8 @@
             <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px;">
               <div class="card">
                 <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 14px;">Live GPS Transit Corridors</h3>
-                <div id="tracking-live-map" style="width: 100%; height: 320px; border-radius: 6px; overflow: hidden;"></div>
+                <div id="tracking-live-map" style="width: 100%; height: 320px; border-radius: 6px; overflow: hidden;">
+                </div>
               </div>
 
               <div class="card">
@@ -776,8 +948,9 @@
           </div>
 
           <div class="card" style="max-width: 650px;">
-            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px;">Simulate Barcode / Checkpoint Scan</h3>
-            
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px;">Simulate Barcode / Checkpoint Scan
+            </h3>
+
             <form id="form-hub-scan">
               <div class="form-group">
                 <label class="form-label">Select Consignment</label>
@@ -791,11 +964,16 @@
               <div class="form-group">
                 <label class="form-label">Scanning Facility / Hub</label>
                 <select id="scan-hub-select" class="form-input">
-                  <option value="a0000000-0000-0000-0000-000000000001">Saveetha Chennai Central Gateway (13.0827°N, 80.2707°E)</option>
-                  <option value="a0000000-0000-0000-0000-000000000002">Bengaluru Electronic City Hub (12.9716°N, 77.5946°E)</option>
-                  <option value="a0000000-0000-0000-0000-000000000003">Mumbai Western Freight Terminal (19.0760°N, 72.8777°E)</option>
-                  <option value="a0000000-0000-0000-0000-000000000004">Delhi NCR Logistics Center (28.6139°N, 77.2090°E)</option>
-                  <option value="a0000000-0000-0000-0000-000000000005">Hyderabad Express Distribution (17.3850°N, 78.4867°E)</option>
+                  <option value="a0000000-0000-0000-0000-000000000001">Saveetha Chennai Central Gateway (13.0827°N,
+                    80.2707°E)</option>
+                  <option value="a0000000-0000-0000-0000-000000000002">Bengaluru Electronic City Hub (12.9716°N,
+                    77.5946°E)</option>
+                  <option value="a0000000-0000-0000-0000-000000000003">Mumbai Western Freight Terminal (19.0760°N,
+                    72.8777°E)</option>
+                  <option value="a0000000-0000-0000-0000-000000000004">Delhi NCR Logistics Center (28.6139°N, 77.2090°E)
+                  </option>
+                  <option value="a0000000-0000-0000-0000-000000000005">Hyderabad Express Distribution (17.3850°N,
+                    78.4867°E)</option>
                 </select>
               </div>
 
@@ -812,7 +990,8 @@
 
               <div class="form-group">
                 <label class="form-label">Audit Remarks</label>
-                <input type="text" id="scan-remarks" class="form-input" placeholder="e.g. Scanned at Sorting Bay 4, loaded to Truck #TN-02-8841" />
+                <input type="text" id="scan-remarks" class="form-input"
+                  placeholder="e.g. Scanned at Sorting Bay 4, loaded to Truck #TN-02-8841" />
               </div>
 
               <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
@@ -833,7 +1012,7 @@
           <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; max-width: 960px;">
             <div class="card">
               <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px;">Parcel Dimensions & Weight</h3>
-              
+
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px;">
                 <div>
                   <label class="form-label">Length (cm)</label>
@@ -866,24 +1045,30 @@
 
             <!-- Calculation Output Card -->
             <div class="card" style="background: linear-gradient(135deg, #1c2333 0%, #0d1b2a 100%); color: #ffffff;">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #ffffff;">Estimated Shipping Tariff</h3>
-              
+              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #ffffff;">Estimated Shipping
+                Tariff</h3>
+
               <div style="display: flex; flex-direction: column; gap: 14px;">
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <div
+                  style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                   <span style="color: #94a3b8;">Volumetric Weight (L×W×H/5000):</span>
                   <span id="calc-res-vol" style="font-weight: 700;">1.80 kg</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <div
+                  style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                   <span style="color: #94a3b8;">Billable Weight:</span>
                   <span id="calc-res-bill" style="font-weight: 700; color: #3b7ddd;">2.50 kg</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <div
+                  style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                   <span style="color: #94a3b8;">Transit Duration:</span>
                   <span id="calc-res-time" style="font-weight: 700; color: #10b981;">3-5 Business Days</span>
                 </div>
                 <div style="margin-top: 10px; text-align: center;">
                   <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Total Calculated Cost</div>
-                  <div id="calc-res-cost" style="font-size: 2.4rem; font-weight: 800; font-family: var(--font-heading); color: #38bdf8;">₹275.00</div>
+                  <div id="calc-res-cost"
+                    style="font-size: 2.4rem; font-weight: 800; font-family: var(--font-heading); color: #38bdf8;">
+                    ₹275.00</div>
                 </div>
               </div>
             </div>
@@ -897,7 +1082,8 @@
           <div class="dash-title-row">
             <div>
               <h1 class="dash-page-title">User Accounts & Access Provisioning</h1>
-              <div style="font-size: 0.85rem; color: #64748b;">Enterprise Identity Management • Role Allocation • 1-Click Access Impersonation</div>
+              <div style="font-size: 0.85rem; color: #64748b;">Enterprise Identity Management • Role Allocation •
+                1-Click Access Impersonation</div>
             </div>
             <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-create-user')">
               + Provision New Account
@@ -908,14 +1094,16 @@
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
               <div>
                 <h3 class="card-title">Registered System Identities & Portals</h3>
-                <div class="card-subtitle">Complete directory of system administrators, hub managers, fleet agents, and enterprise clients.</div>
+                <div class="card-subtitle">Complete directory of system administrators, hub managers, fleet agents, and
+                  enterprise clients.</div>
               </div>
               <button class="btn btn-outline btn-sm" onclick="OperationsModule.loadUsers()">Refresh Directory</button>
             </div>
             <div class="card-body" style="padding: 0; overflow-x: auto;">
               <table class="dash-table" style="width: 100%; border-collapse: collapse;">
                 <thead>
-                  <tr style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.78rem; text-transform: uppercase; color: #64748b;">
+                  <tr
+                    style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.78rem; text-transform: uppercase; color: #64748b;">
                     <th style="padding: 12px 16px;">Identity & Email</th>
                     <th style="padding: 12px 16px;">System Role</th>
                     <th style="padding: 12px 16px;">Phone</th>
@@ -939,7 +1127,8 @@
           <div class="dash-header-row">
             <div>
               <h2 class="dash-title">Invoices &amp; <span>Billing Statements</span></h2>
-              <div style="font-size: 0.85rem; color: #64748b;">Official GST Invoices • Corporate Credit Ledger • Tariff Breakdown</div>
+              <div style="font-size: 0.85rem; color: #64748b;">Official GST Invoices • Corporate Credit Ledger • Tariff
+                Breakdown</div>
             </div>
             <button class="btn btn-outline" onclick="OperationsModule.exportCSV()">Export Financial Ledger</button>
           </div>
@@ -947,7 +1136,8 @@
           <div class="card" style="margin-top: 20px; padding: 0; overflow-x: auto;">
             <table class="dash-table" style="width: 100%; border-collapse: collapse;">
               <thead>
-                <tr style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.78rem; text-transform: uppercase; color: #64748b;">
+                <tr
+                  style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.78rem; text-transform: uppercase; color: #64748b;">
                   <th style="padding: 12px 16px;">Invoice No</th>
                   <th style="padding: 12px 16px;">Consignment AWB</th>
                   <th style="padding: 12px 16px;">Recipient</th>
@@ -970,15 +1160,23 @@
           <div class="dash-header-row">
             <div>
               <h2 class="dash-title">Bulk <span>Consignment Dispatch</span></h2>
-              <div style="font-size: 0.85rem; color: #64748b;">Enterprise Batch Ingestion • Automated Cryptographic Checksum Generation</div>
+              <div style="font-size: 0.85rem; color: #64748b;">Enterprise Batch Ingestion • Automated Cryptographic
+                Checksum Generation</div>
             </div>
           </div>
 
           <div class="card" style="margin-top: 20px; padding: 24px;">
             <div class="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b7ddd" stroke-width="2" style="margin: 0 auto 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">Click or Drag &amp; Drop CSV Consignments Manifest</div>
-              <div style="font-size: 0.8rem; color: #64748b; margin-top: 6px;">Supported columns: Sender Name, Recipient Name, Recipient Pincode, Weight (kg)</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="#3b7ddd" stroke-width="2" style="margin: 0 auto 12px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">Click or Drag &amp; Drop CSV
+                Consignments Manifest</div>
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 6px;">Supported columns: Sender Name, Recipient
+                Name, Recipient Pincode, Weight (kg)</div>
               <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="
                 const file = this.files[0];
                 if (file) {
@@ -1010,7 +1208,18 @@
 
     <!-- Floating Action Button (Matches Sliders in Reference Image 1) -->
     <button class="fab-settings-btn" title="Quick Actions" onclick="OperationsModule.openModal('modal-new-shipment')">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5">
+        <line x1="4" y1="21" x2="4" y2="14"></line>
+        <line x1="4" y1="10" x2="4" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12" y2="3"></line>
+        <line x1="20" y1="21" x2="20" y2="16"></line>
+        <line x1="20" y1="12" x2="20" y2="3"></line>
+        <line x1="1" y1="14" x2="7" y2="14"></line>
+        <line x1="9" y1="8" x2="15" y2="8"></line>
+        <line x1="17" y1="16" x2="23" y2="16"></line>
+      </svg>
     </button>
   </div>
 
@@ -1044,7 +1253,8 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
           <div class="form-group">
             <label class="form-label">Recipient Name<span class="req">*</span></label>
-            <input type="text" id="ship-recip-name" class="form-input" placeholder="Enter recipient full name" required />
+            <input type="text" id="ship-recip-name" class="form-input" placeholder="Enter recipient full name"
+              required />
           </div>
           <div class="form-group">
             <label class="form-label">Recipient Phone<span class="req">*</span></label>
@@ -1081,7 +1291,8 @@
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 12px;">
-          <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-new-shipment')">Cancel</button>
+          <button type="button" class="btn btn-outline"
+            onclick="OperationsModule.closeModal('modal-new-shipment')">Cancel</button>
           <button type="submit" class="btn btn-primary">Generate Checksum Tracking & Book</button>
         </div>
       </form>
@@ -1135,12 +1346,14 @@
 
         <div class="form-group">
           <label class="form-label">Official System Name / Department<span class="req">*</span></label>
-          <input type="text" id="new-user-name" class="form-input" placeholder="e.g. Saveetha Regional Gateway Operations" required />
+          <input type="text" id="new-user-name" class="form-input"
+            placeholder="e.g. Saveetha Regional Gateway Operations" required />
         </div>
 
         <div class="form-group">
           <label class="form-label">Official Email Address<span class="req">*</span></label>
-          <input type="email" id="new-user-email" class="form-input" placeholder="user@saveetha.com or user@crmgmt.io" required />
+          <input type="email" id="new-user-email" class="form-input" placeholder="user@saveetha.com or user@crmgmt.io"
+            required />
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
@@ -1167,7 +1380,8 @@
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-          <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-create-user')">Cancel</button>
+          <button type="button" class="btn btn-outline"
+            onclick="OperationsModule.closeModal('modal-create-user')">Cancel</button>
           <button type="submit" class="btn btn-primary">Generate Account &amp; API Key</button>
         </div>
       </form>
@@ -1189,7 +1403,8 @@
       </div>
 
       <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-        <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-thermal-label')">Close</button>
+        <button type="button" class="btn btn-outline"
+          onclick="OperationsModule.closeModal('modal-thermal-label')">Close</button>
         <button type="button" class="btn btn-primary" onclick="window.print();">🖨️ Print 4x6" Thermal Label</button>
       </div>
     </div>
@@ -1210,8 +1425,10 @@
       </div>
 
       <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-        <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-tax-invoice')">Close</button>
-        <button type="button" class="btn btn-primary" onclick="window.print();">🖨️ Download / Print Tax Invoice</button>
+        <button type="button" class="btn btn-outline"
+          onclick="OperationsModule.closeModal('modal-tax-invoice')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="window.print();">🖨️ Download / Print Tax
+          Invoice</button>
       </div>
     </div>
   </div>
@@ -1222,20 +1439,25 @@
   <div id="modal-edit-pfp" class="modal-backdrop">
     <div class="modal-content" style="max-width: 520px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 id="pfp-modal-title" style="font-size: 1.15rem; font-weight: 800; color: #1e293b;">Customize Profile Picture</h3>
+        <h3 id="pfp-modal-title" style="font-size: 1.15rem; font-weight: 800; color: #1e293b;">Customize Profile Picture
+        </h3>
         <button class="nav-icon-btn" onclick="OperationsModule.closeModal('modal-edit-pfp')">✕</button>
       </div>
 
       <!-- Live Preview -->
       <div class="pfp-preview-container">
-        <img id="pfp-preview-img" class="pfp-large-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" alt="Preview" />
+        <img id="pfp-preview-img" class="pfp-large-preview"
+          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
+          alt="Preview" />
         <div style="font-size: 0.8rem; color: #64748b;">Live Avatar Preview</div>
       </div>
 
       <!-- Upload Local Photo -->
       <div class="form-group" style="text-align: center;">
-        <input type="file" id="pfp-file-input" accept="image/*" style="display: none;" onchange="OperationsModule.handlePfpFileUpload(this)" />
-        <button type="button" class="btn btn-outline" style="width: 100%;" onclick="document.getElementById('pfp-file-input').click()">
+        <input type="file" id="pfp-file-input" accept="image/*" style="display: none;"
+          onchange="OperationsModule.handlePfpFileUpload(this)" />
+        <button type="button" class="btn btn-outline" style="width: 100%;"
+          onclick="document.getElementById('pfp-file-input').click()">
           📁 Upload Image from Device
         </button>
       </div>
@@ -1243,25 +1465,40 @@
       <!-- Custom Image URL -->
       <div class="form-group">
         <label class="form-label">Or Paste Image URL</label>
-        <input type="url" id="pfp-url-input" class="form-input" placeholder="https://example.com/avatar.jpg" oninput="OperationsModule.handlePfpUrlChange(this.value)" />
+        <input type="url" id="pfp-url-input" class="form-input" placeholder="https://example.com/avatar.jpg"
+          oninput="OperationsModule.handlePfpUrlChange(this.value)" />
       </div>
 
       <!-- Curated Presets -->
       <div class="form-group">
         <label class="form-label">Or Choose from Curated Enterprise Avatars</label>
         <div class="pfp-presets-grid">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)" title="Executive Administrator" />
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)" title="Chief Systems Architect" />
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)" title="Hub Operations Manager" />
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)" title="Fleet Dispatch Officer" />
-          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80" class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)" title="Healthcare Procurement Lead" />
-          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80" class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)" title="Courier Operations Unit" />
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
+            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
+            title="Executive Administrator" />
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
+            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
+            title="Chief Systems Architect" />
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
+            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
+            title="Hub Operations Manager" />
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"
+            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
+            title="Fleet Dispatch Officer" />
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80"
+            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
+            title="Healthcare Procurement Lead" />
+          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80"
+            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
+            title="Courier Operations Unit" />
         </div>
       </div>
 
       <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-        <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-edit-pfp')">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="OperationsModule.saveCustomPfp()">Save Profile Picture</button>
+        <button type="button" class="btn btn-outline"
+          onclick="OperationsModule.closeModal('modal-edit-pfp')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="OperationsModule.saveCustomPfp()">Save Profile
+          Picture</button>
       </div>
     </div>
   </div>
@@ -1273,4 +1510,5 @@
   <script src="js/tracking.js"></script>
   <script src="js/operations.js"></script>
 </body>
+
 </html>
