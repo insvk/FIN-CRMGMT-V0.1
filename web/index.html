@@ -175,17 +175,21 @@
         <span class="brand-pro-badge">MAIN DASHBAORD</span>
       </div>
 
-      <!-- User Card (Clickable to Edit Profile Picture) -->
-      <div class="sidebar-user" onclick="OperationsModule.openPfpModal()" title="Click to customize profile picture">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-          alt="Avatar" class="sidebar-avatar" />
-        <div class="sidebar-user-info">
-          <div class="sidebar-user-name">
-            <span class="user-name-display">SIMATS Administrator</span>
-            <span style="font-size: 0.7rem; color: #94a3b8;">✎</span>
+      <!-- User Card (Clickable to Edit Profile & Name) -->
+      <div class="sidebar-user" style="display: flex; align-items: center; justify-content: space-between;" title="Click to edit administrator name & profile details">
+        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1;" onclick="OperationsModule.openEditUserModal(CRMGMT.state.currentUser?.id)">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+            alt="Avatar" class="sidebar-avatar" />
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">
+              <span class="user-name-display">Naresh S</span>
+            </div>
+            <div class="sidebar-user-role user-role-display">Super Admin</div>
           </div>
-          <div class="sidebar-user-role user-role-display">Super Admin</div>
         </div>
+        <button class="btn-icon" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 6px; font-size: 14px;" onclick="OperationsModule.openEditUserModal(CRMGMT.state.currentUser?.id)" title="Edit my name & profile">
+          ✏️
+        </button>
       </div>
 
       <!-- Navigation Tree -->
@@ -1677,16 +1681,91 @@
       <!-- Footer Buttons -->
       <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 16px; margin-top: 16px; flex-wrap: wrap; gap: 10px;">
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button id="btn-cust-hist-impersonate" class="btn btn-primary btn-sm">
-            🔑 Log In As This Customer
+          <button id="btn-cust-hist-edit-profile" class="btn btn-primary btn-sm">
+            ✏️ Edit Customer Name &amp; Details
+          </button>
+          <button id="btn-cust-hist-impersonate" class="btn btn-outline btn-sm">
+            🔑 Log In As
           </button>
           <button id="btn-cust-hist-edit-pfp" class="btn btn-outline btn-sm">
-            📸 Edit Profile Picture
+            📸 Edit PFP
           </button>
         </div>
         <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-customer-history')">Close</button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 10: EDIT USER NAME & PROFILE (Admin God-Mode Editor)
+       ========================================================================= -->
+  <div id="modal-edit-user-profile" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 540px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img id="edit-user-modal-pfp" src="" alt="Avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #3b7ddd;" />
+          <div>
+            <h3 id="edit-user-modal-title" style="font-size: 1.15rem; font-weight: 800; color: #1e293b; margin: 0;">Edit User Profile &amp; Name</h3>
+            <div id="edit-user-modal-subtitle" style="font-size: 0.76rem; color: #64748b;">Modify name, contact credentials, and allocated gateway</div>
+          </div>
+        </div>
+        <button class="nav-icon-btn" onclick="OperationsModule.closeModal('modal-edit-user-profile')">✕</button>
+      </div>
+
+      <form id="form-edit-user-profile" onsubmit="event.preventDefault(); OperationsModule.saveUserProfile();">
+        <input type="hidden" id="edit-user-id" />
+
+        <div class="form-group">
+          <label class="form-label">Full Name &amp; Designation<span class="req">*</span></label>
+          <input type="text" id="edit-user-fullname" class="form-input" placeholder="e.g. Naresh S (SIMATS Chief Systems Administrator)" required />
+          <div style="font-size: 0.74rem; color: #64748b; margin-top: 4px;">Updates immediately across sidebar, navbar, customer cards, and user directory.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label class="form-label">Email Address<span class="req">*</span></label>
+            <input type="email" id="edit-user-email" class="form-input" placeholder="name@domain.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number<span class="req">*</span></label>
+            <input type="tel" id="edit-user-phone" class="form-input" placeholder="+91 98XXX XXXXX" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label class="form-label">System Role<span class="req">*</span></label>
+            <select id="edit-user-role" class="form-input" required>
+              <option value="super_admin">Super Administrator</option>
+              <option value="hub_manager">Hub Operations Manager</option>
+              <option value="delivery_agent">Fleet Delivery Agent</option>
+              <option value="enterprise_customer">Enterprise Customer</option>
+              <option value="standard_customer">Standard Customer / Consignee</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Allocated Hub Gateway</label>
+            <select id="edit-user-hub" class="form-input">
+              <option value="a0000000-0000-0000-0000-000000000001">Saveetha Chennai Central Gateway</option>
+              <option value="a0000000-0000-0000-0000-000000000002">Bengaluru Electronic City Hub</option>
+              <option value="a0000000-0000-0000-0000-000000000003">Mumbai Western Freight Terminal</option>
+              <option value="a0000000-0000-0000-0000-000000000004">Delhi NCR Logistics Center</option>
+              <option value="a0000000-0000-0000-0000-000000000005">Hyderabad Express Distribution</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="OperationsModule.openPfpModal(document.getElementById('edit-user-id').value, document.getElementById('edit-user-fullname').value)">
+            📸 Change Profile Picture
+          </button>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-edit-user-profile')">Cancel</button>
+            <button type="submit" class="btn btn-primary">💾 Save Profile &amp; Name</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 

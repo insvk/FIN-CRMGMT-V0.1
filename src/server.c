@@ -201,6 +201,47 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
         resp_json = handle_admin_user_create(caller, em, nm, rl, ph, hb, pw);
         if (req) cJSON_Delete(req);
     }
+    else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/v1/admin/users/update") == 0) {
+        cJSON *req = cJSON_Parse(body);
+        if (req) {
+            cJSON *uid = cJSON_GetObjectItem(req, "user_id");
+            cJSON *name = cJSON_GetObjectItem(req, "full_name");
+            cJSON *email = cJSON_GetObjectItem(req, "email");
+            cJSON *phone = cJSON_GetObjectItem(req, "phone");
+            cJSON *role_str = cJSON_GetObjectItem(req, "role");
+            cJSON *hub = cJSON_GetObjectItem(req, "allocated_hub_id");
+
+            if (uid && uid->valuestring) {
+                User *u = db_find_user_by_id(uid->valuestring);
+                if (u) {
+                    if (name && name->valuestring) snprintf(u->full_name, sizeof(u->full_name), "%s", name->valuestring);
+                    if (email && email->valuestring) snprintf(u->email, sizeof(u->email), "%s", email->valuestring);
+                    if (phone && phone->valuestring) snprintf(u->phone, sizeof(u->phone), "%s", phone->valuestring);
+                    if (role_str && role_str->valuestring) {
+                        u->role = parse_role(role_str->valuestring);
+                        snprintf(u->role_name, sizeof(u->role_name), "%s", role_to_string(u->role));
+                    }
+                    if (hub && hub->valuestring) snprintf(u->allocated_hub_id, sizeof(u->allocated_hub_id), "%s", hub->valuestring);
+
+                    resp_json = cJSON_CreateObject();
+                    cJSON_AddBoolToObject(resp_json, "success", true);
+                    cJSON_AddStringToObject(resp_json, "message", "User profile updated.");
+                    cJSON_AddItemToObject(resp_json, "user", user_to_json(u));
+                } else {
+                    *status_code_out = 404;
+                    resp_json = cJSON_CreateObject();
+                    cJSON_AddBoolToObject(resp_json, "success", false);
+                    cJSON_AddStringToObject(resp_json, "error", "User not found.");
+                }
+            } else {
+                *status_code_out = 400;
+                resp_json = cJSON_CreateObject();
+                cJSON_AddBoolToObject(resp_json, "success", false);
+                cJSON_AddStringToObject(resp_json, "error", "Missing user_id.");
+            }
+            cJSON_Delete(req);
+        }
+    }
     // --- Hubs ---
     else if (strcmp(method, "GET") == 0 && strcmp(path, "/api/v1/hubs") == 0) {
         resp_json = handle_admin_hub_list(caller);

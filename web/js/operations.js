@@ -371,13 +371,16 @@ const OperationsModule = {
           </span>
         </td>
         <td style="padding: 12px 16px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-primary btn-sm" onclick="OperationsModule.openEditUserModal('${u.id}')" title="Edit user name, role & contact details">
+            ✏️ Edit Name
+          </button>
           <button class="btn btn-outline btn-sm" onclick="OperationsModule.viewCustomerHistory('${u.id}')" title="View complete order history & statistics">
             📊 History &amp; Stats
           </button>
           <button class="btn btn-outline btn-sm" onclick="OperationsModule.openPfpModal('${u.id}', '${u.full_name}')" title="Change profile picture">
             📸 Edit PFP
           </button>
-          <button class="btn btn-primary btn-sm" onclick="OperationsModule.impersonateUser('${u.id}')" title="Log In directly as this user">
+          <button class="btn btn-outline btn-sm" onclick="OperationsModule.impersonateUser('${u.id}')" title="Log In directly as this user">
             🔑 Log In As
           </button>
           <button class="btn btn-outline btn-sm" onclick="OperationsModule.toggleUserStatus('${u.id}')" title="Toggle status">
@@ -388,6 +391,96 @@ const OperationsModule = {
       `;
       tbody.appendChild(tr);
     });
+  },
+
+  openEditUserModal(userId) {
+    let u = (this.users || []).find(item => item.id === userId);
+    if (!u && userId === CRMGMT.state.currentUser?.id) {
+      u = CRMGMT.state.currentUser;
+    }
+    if (!u) {
+      u = {
+        id: userId || 'u0000000-0000-0000-0000-000000000001',
+        full_name: 'Naresh S (SIMATS Chief Systems Administrator)',
+        email: 'admin@crmgmt.io',
+        role: 'super_admin',
+        phone: '+91 98400 11223',
+        allocated_hub_id: 'a0000000-0000-0000-0000-000000000001'
+      };
+    }
+
+    const idInput = document.getElementById('edit-user-id');
+    const nameInput = document.getElementById('edit-user-fullname');
+    const emailInput = document.getElementById('edit-user-email');
+    const phoneInput = document.getElementById('edit-user-phone');
+    const roleInput = document.getElementById('edit-user-role');
+    const hubInput = document.getElementById('edit-user-hub');
+    const pfpImg = document.getElementById('edit-user-modal-pfp');
+    const titleEl = document.getElementById('edit-user-modal-title');
+
+    if (idInput) idInput.value = u.id;
+    if (nameInput) nameInput.value = u.full_name || '';
+    if (emailInput) emailInput.value = u.email || '';
+    if (phoneInput) phoneInput.value = u.phone || '';
+    if (roleInput) roleInput.value = u.role || 'standard_customer';
+    if (hubInput) hubInput.value = u.allocated_hub_id || 'a0000000-0000-0000-0000-000000000001';
+    if (pfpImg) pfpImg.src = CRMGMT.getPfp(u.id, u.role);
+    if (titleEl) {
+      const isSelf = u.id === CRMGMT.state.currentUser?.id;
+      titleEl.textContent = isSelf ? 'Edit My Name & Administrator Profile' : `Edit Profile: ${u.full_name.split('(')[0].trim()}`;
+    }
+
+    this.openModal('modal-edit-user-profile');
+  },
+
+  async saveUserProfile() {
+    const user_id = document.getElementById('edit-user-id')?.value;
+    const full_name = document.getElementById('edit-user-fullname')?.value.trim();
+    const email = document.getElementById('edit-user-email')?.value.trim();
+    const phone = document.getElementById('edit-user-phone')?.value.trim();
+    const role = document.getElementById('edit-user-role')?.value;
+    const allocated_hub_id = document.getElementById('edit-user-hub')?.value;
+
+    if (!full_name || !email) {
+      CRMGMT.toast('Name and email are required.', 'warning');
+      return;
+    }
+
+    const payload = { user_id, full_name, email, phone, role, allocated_hub_id };
+    const res = await CRMGMT.api('/api/v1/admin/users/update', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    if (res.data && res.data.success) {
+      CRMGMT.toast(`Profile & name updated for ${full_name}!`, 'success');
+      this.closeModal('modal-edit-user-profile');
+
+      // If updating current logged-in admin's profile
+      if (CRMGMT.state.currentUser && (CRMGMT.state.currentUser.id === user_id || CRMGMT.state.currentUser.email === email)) {
+        CRMGMT.state.currentUser.full_name = full_name;
+        CRMGMT.state.currentUser.email = email;
+        CRMGMT.state.currentUser.phone = phone;
+        CRMGMT.state.currentUser.role = role;
+        CRMGMT.state.currentUser.allocated_hub_id = allocated_hub_id;
+        localStorage.setItem('crmgmt_user', JSON.stringify(CRMGMT.state.currentUser));
+        CRMGMT.updateUserUI();
+      }
+
+      // Update in memory users list
+      const u = (this.users || []).find(item => item.id === user_id);
+      if (u) {
+        u.full_name = full_name;
+        u.email = email;
+        u.phone = phone;
+        u.role = role;
+        u.allocated_hub_id = allocated_hub_id;
+      }
+
+      this.renderUsersTable(this.users);
+    } else {
+      CRMGMT.toast(res.data?.error || 'Failed to update user profile.', 'error');
+    }
   },
 
   async viewCustomerHistory(userId) {
@@ -429,9 +522,10 @@ const OperationsModule = {
     if (phoneEl) phoneEl.textContent = u.phone || '+91 98400 00000';
     if (hubEl) hubEl.textContent = u.allocated_hub_id === 'h00000002' ? 'STPI Bangalore Gateway' : 'Saveetha Chennai Central Gateway';
 
-    // Hook impersonate & PFP buttons
+    // Hook impersonate, PFP & edit details buttons
     const btnImp = document.getElementById('btn-cust-hist-impersonate');
     const btnPfp = document.getElementById('btn-cust-hist-edit-pfp');
+    const btnEditProfile = document.getElementById('btn-cust-hist-edit-profile');
     if (btnImp) {
       btnImp.onclick = () => {
         this.closeModal('modal-customer-history');
@@ -441,6 +535,12 @@ const OperationsModule = {
     if (btnPfp) {
       btnPfp.onclick = () => {
         this.openPfpModal(u.id, u.full_name);
+      };
+    }
+    if (btnEditProfile) {
+      btnEditProfile.onclick = () => {
+        this.closeModal('modal-customer-history');
+        this.openEditUserModal(u.id);
       };
     }
 

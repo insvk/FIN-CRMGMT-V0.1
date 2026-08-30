@@ -322,6 +322,30 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self._send_json({"success": False, "error": "User not found."}, 404)
             return
 
+        if path == '/api/v1/admin/users/update':
+            user_id = payload.get('user_id') or payload.get('id')
+            user = next((u for u in USERS if u["id"] == user_id), None)
+            if user:
+                if 'full_name' in payload and payload['full_name']:
+                    user['full_name'] = payload['full_name'].strip()
+                if 'email' in payload and payload['email']:
+                    user['email'] = payload['email'].strip()
+                if 'phone' in payload:
+                    user['phone'] = payload['phone'].strip()
+                if 'role' in payload and payload['role']:
+                    user['role'] = payload['role'].strip()
+                if 'allocated_hub_id' in payload:
+                    user['allocated_hub_id'] = payload['allocated_hub_id']
+                
+                self._send_json({
+                    "success": True,
+                    "message": f"Successfully updated profile for {user['full_name']}",
+                    "user": user
+                })
+            else:
+                self._send_json({"success": False, "error": "User not found."}, 404)
+            return
+
         if path == '/api/v1/admin/users/toggle-status':
             user_id = payload.get('user_id')
             user = next((u for u in USERS if u["id"] == user_id), None)
