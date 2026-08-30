@@ -319,13 +319,67 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
 
 // Client connection handler
 static void handle_http_client(SOCKET client_sock) {
-    char recv_buf[8192];
-    int bytes_read = recv(client_sock, recv_buf, sizeof(recv_buf) - 1, 0);
-    if (bytes_read <= 0) {
+    size_t buf_capacity = 65536;
+    char *recv_buf = (char *)malloc(buf_capacity);
+    if (!recv_buf) {
         closesocket(client_sock);
         return;
     }
-    recv_buf[bytes_read] = '\0';
+    size_t total_bytes = 0;
+    char *header_end = NULL;
+
+    // 1. Read until headers complete (\r\n\r\n)
+    while (total_bytes < buf_capacity - 1) {
+        int n = recv(client_sock, recv_buf + total_bytes, (int)(buf_capacity - 1 - total_bytes), 0);
+        if (n <= 0) break;
+        total_bytes += n;
+        recv_buf[total_bytes] = '\0';
+        header_end = strstr(recv_buf, "\r\n\r\n");
+        if (header_end) break;
+    }
+
+    if (!header_end) {
+        free(recv_buf);
+        closesocket(client_sock);
+        return;
+    }
+
+    // 2. Check Content-Length to read complete body
+    size_t content_length = 0;
+    char *cl_line = strstr(recv_buf, "Content-Length: ");
+    if (!cl_line) cl_line = strstr(recv_buf, "content-length: ");
+    if (cl_line) {
+        content_length = (size_t)atol(cl_line + 16);
+    }
+
+    size_t header_len = (header_end + 4) - recv_buf;
+    size_t body_bytes_read = total_bytes - header_len;
+
+    // If more body is needed, allocate if necessary and read remaining bytes
+    if (content_length > 0 && body_bytes_read < content_length) {
+        size_t needed = header_len + content_length + 1;
+        if (needed > buf_capacity) {
+            char *new_buf = (char *)realloc(recv_buf, needed);
+            if (!new_buf) {
+                free(recv_buf);
+                closesocket(client_sock);
+                return;
+            }
+            recv_buf = new_buf;
+            buf_capacity = needed;
+        }
+
+        while (body_bytes_read < content_length) {
+            size_t to_read = content_length - body_bytes_read;
+            int n = recv(client_sock, recv_buf + total_bytes, (int)to_read, 0);
+            if (n <= 0) break;
+            total_bytes += n;
+            body_bytes_read += n;
+            recv_buf[total_bytes] = '\0';
+        }
+    }
+
+    recv_buf[total_bytes] = '\0';
 
     // Parse HTTP Request line
     char method[16] = {0};
@@ -349,6 +403,7 @@ static void handle_http_client(SOCKET client_sock) {
             "Content-Length: 0\r\n"
             "Connection: close\r\n\r\n";
         send(client_sock, cors_res, (int)strlen(cors_res), 0);
+        free(recv_buf);
         closesocket(client_sock);
         return;
     }
@@ -398,6 +453,7 @@ static void handle_http_client(SOCKET client_sock) {
             send(client_sock, json_res, (int)len, 0);
             free(json_res);
         }
+        free(recv_buf);
         closesocket(client_sock);
         return;
     }
@@ -447,6 +503,7 @@ static void handle_http_client(SOCKET client_sock) {
         }
     }
 
+    free(recv_buf);
     closesocket(client_sock);
 }
 
