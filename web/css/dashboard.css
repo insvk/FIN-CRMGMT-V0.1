@@ -951,3 +951,61 @@
   background: #eff6ff;
   border-color: #2563eb;
 }
+
+/* 6. Profile Picture Customizer Modal & Avatars */
+.pfp-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pfp-large-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3b7ddd;
+  box-shadow: 0 4px 14px rgba(59, 125, 221, 0.25);
+  margin-bottom: 10px;
+}
+
+.pfp-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin: 14px 0 20px 0;
+}
+
+.pfp-preset-item {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.pfp-preset-item:hover {
+  transform: scale(1.12);
+  border-color: #3b7ddd;
+}
+
+.pfp-preset-item.selected {
+  border-color: #3b7ddd;
+  box-shadow: 0 0 0 3px rgba(59, 125, 221, 0.3);
+}
+
+.sidebar-user {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.sidebar-user:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-avatar-btn {
+  cursor: pointer;
+}

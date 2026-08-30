@@ -210,6 +210,11 @@ const CRMGMT = {
       // View-specific triggers
       if (effectiveView === 'dashboard' && window.DashboardModule) {
         window.DashboardModule.loadAnalytics();
+        setTimeout(() => {
+          if (window.DashboardModule.hubMap) {
+            window.DashboardModule.hubMap.invalidateSize();
+          }
+        }, 200);
       } else if (effectiveView === 'customer_dashboard' && window.OperationsModule) {
         window.OperationsModule.loadCustomerOverview();
       } else if (effectiveView === 'tracking' && window.TrackingModule) {
@@ -245,6 +250,31 @@ const CRMGMT = {
     }
   },
 
+  // Profile Picture (PFP) Manager
+  getPfp(userId, role) {
+    try {
+      const pfps = JSON.parse(localStorage.getItem('crmgmt_custom_pfps') || '{}');
+      if (userId && pfps[userId]) return pfps[userId];
+    } catch(e) {}
+
+    // Default curated avatars
+    if (role === 'hub_manager') return 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80';
+    if (role === 'delivery_agent') return 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80';
+    if (role === 'enterprise_customer') return 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80';
+    if (role === 'standard_customer') return 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80';
+    return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
+  },
+
+  setPfp(userId, pfpUrl) {
+    if (!userId || !pfpUrl) return;
+    try {
+      const pfps = JSON.parse(localStorage.getItem('crmgmt_custom_pfps') || '{}');
+      pfps[userId] = pfpUrl;
+      localStorage.setItem('crmgmt_custom_pfps', JSON.stringify(pfps));
+    } catch(e) {}
+    this.updateUserUI();
+  },
+
   updateUserUI() {
     const u = this.state.currentUser;
     if (!u) return;
@@ -252,6 +282,12 @@ const CRMGMT = {
     document.querySelectorAll('.user-name-display').forEach(el => el.textContent = u.full_name || 'SIMATS Chief Systems Administrator');
     document.querySelectorAll('.user-role-display').forEach(el => el.textContent = (u.role || 'Super Admin').replace('_', ' ').toUpperCase());
     document.querySelectorAll('.user-email-display').forEach(el => el.textContent = u.email);
+
+    // Update Profile Picture
+    const activePfp = this.getPfp(u.id, u.role);
+    document.querySelectorAll('.sidebar-avatar, .nav-avatar-img, .current-user-avatar').forEach(el => {
+      el.src = activePfp;
+    });
 
     const roleSelector = document.getElementById('quick-role-select');
     if (roleSelector) roleSelector.value = u.role || 'super_admin';

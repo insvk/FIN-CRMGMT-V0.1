@@ -12,80 +12,80 @@ const DashboardModule = {
   },
 
   async loadAnalytics() {
-    const res = await CRMGMT.api('/api/v1/admin/analytics');
-    let data = null;
-
-    if (res.data && res.data.success && res.data.data) {
-      data = res.data.data;
-    } else {
-      // Offline fallback values
-      data = {
-        metrics: {
-          sales: 2.382,
-          sales_change: '-3.65%',
-          earnings_formatted: '$21.300',
-          earnings_change: '+6.65%',
-          visitors: 14.212,
-          visitors_change: '+5.25%',
-          orders: 64,
-          orders_change: '-2.25%'
-        },
-        recent_movement: [
-          { month: 'Jan', movement: 2100 },
-          { month: 'Feb', movement: 1600 },
-          { month: 'Mar', movement: 1850 },
-          { month: 'Apr', movement: 1950 },
-          { month: 'May', movement: 1600 },
-          { month: 'Jun', movement: 2100 },
-          { month: 'Jul', movement: 2800 },
-          { month: 'Aug', movement: 2700 },
-          { month: 'Sep', movement: 3100 },
-          { month: 'Oct', movement: 3700 },
-          { month: 'Nov', movement: 3200 },
-          { month: 'Dec', movement: 3600 }
-        ],
-        status_breakdown: {
-          chrome_delivered: 4306,
-          firefox_intransit: 3801,
-          edge_outfordelivery: 1689,
-          other_exceptions: 3251
-        },
-        hubs: [
-          { hub_name: 'Saveetha Chennai Central Gateway', latitude: 13.0827, longitude: 80.2707, capacity: 25000, current_load: 3420 },
-          { hub_name: 'Bengaluru Electronic City Hub', latitude: 12.9716, longitude: 77.5946, capacity: 20000, current_load: 2810 },
-          { hub_name: 'Mumbai Western Freight Terminal', latitude: 19.0760, longitude: 72.8777, capacity: 30000, current_load: 4150 },
-          { hub_name: 'Delhi NCR Logistics Center', latitude: 28.6139, longitude: 77.2090, capacity: 35000, current_load: 5290 },
-          { hub_name: 'Hyderabad Express Distribution', latitude: 17.3850, longitude: 78.4867, capacity: 18000, current_load: 1940 },
-          { hub_name: 'Kolkata Eastern Logistics Yard', latitude: 22.5726, 88.3639, capacity: 15000, current_load: 1420 }
-        ]
-      };
+    let shipments = [];
+    if (window.OperationsModule) {
+      if (!window.OperationsModule.shipments || window.OperationsModule.shipments.length === 0) {
+        await window.OperationsModule.loadShipments();
+      }
+      shipments = window.OperationsModule.shipments || [];
     }
 
-    this.renderMetrics(data.metrics);
-    this.renderSplineChart(data.recent_movement);
-    this.renderDonutChart(data.status_breakdown);
-    this.updateHubMap(data.hubs);
+    const activeCount = shipments.filter(s => s.status !== 'DELIVERED').length;
+    const deliveredCount = shipments.filter(s => s.status === 'DELIVERED').length;
+    const inTransitCount = shipments.filter(s => s.status === 'IN_TRANSIT').length;
+    const outForDeliveryCount = shipments.filter(s => s.status === 'OUT_FOR_DELIVERY').length;
+    const exceptionCount = shipments.filter(s => s.status === 'EXCEPTION').length;
+    const totalSpend = shipments.reduce((acc, s) => acc + (parseFloat(s.shipping_cost) || 0), 0);
+    const totalWeight = shipments.reduce((acc, s) => acc + (parseFloat(s.weight_kg) || 0), 0);
+
+    const metrics = {
+      active_shipments: activeCount || 4,
+      total_revenue: totalSpend || 1285.0,
+      sla_rate: '99.4%',
+      total_weight: (totalWeight || 8.6).toFixed(1)
+    };
+
+    const movementData = [
+      { month: 'Jan', movement: 1240 },
+      { month: 'Feb', movement: 1480 },
+      { month: 'Mar', movement: 1950 },
+      { month: 'Apr', movement: 2200 },
+      { month: 'May', movement: 2650 },
+      { month: 'Jun', movement: 3100 },
+      { month: 'Jul', movement: 3450 },
+      { month: 'Aug', movement: 3900 },
+      { month: 'Sep', movement: 4200 },
+      { month: 'Oct', movement: 4600 },
+      { month: 'Nov', movement: 4950 },
+      { month: 'Dec', movement: 5400 }
+    ];
+
+    const statusBreakdown = {
+      delivered: deliveredCount || 1,
+      in_transit: inTransitCount || 1,
+      out_for_delivery: outForDeliveryCount || 1,
+      exceptions: exceptionCount || 1
+    };
+
+    const hubs = [
+      { hub_name: 'Saveetha Chennai Central Gateway', latitude: 13.0827, longitude: 80.2707, capacity: 25000, current_load: 3420 },
+      { hub_name: 'Bengaluru Electronic City Hub', latitude: 12.9716, longitude: 77.5946, capacity: 20000, current_load: 2810 },
+      { hub_name: 'Mumbai Western Freight Terminal', latitude: 19.0760, longitude: 72.8777, capacity: 30000, current_load: 4150 },
+      { hub_name: 'Delhi NCR Logistics Center', latitude: 28.6139, longitude: 77.2090, capacity: 35000, current_load: 5290 },
+      { hub_name: 'Hyderabad Express Distribution', latitude: 17.3850, longitude: 78.4867, capacity: 18000, current_load: 1940 },
+      { hub_name: 'Kolkata Eastern Logistics Yard', latitude: 22.5726, longitude: 88.3639, capacity: 15000, current_load: 1420 }
+    ];
+
+    this.renderMetrics(metrics);
+    this.renderSplineChart(movementData);
+    this.renderDonutChart(statusBreakdown);
+    this.updateHubMap(hubs);
   },
 
   renderMetrics(m) {
     if (!m) return;
-    const elSales = document.getElementById('metric-sales-val');
-    const elSalesChg = document.getElementById('metric-sales-chg');
-    const elEarn = document.getElementById('metric-earnings-val');
-    const elEarnChg = document.getElementById('metric-earnings-chg');
-    const elVisit = document.getElementById('metric-visitors-val');
-    const elVisitChg = document.getElementById('metric-visitors-chg');
-    const elOrders = document.getElementById('metric-orders-val');
-    const elOrdersChg = document.getElementById('metric-orders-chg');
+    const elActive = document.getElementById('metric-active-val');
+    const elRev = document.getElementById('metric-rev-val');
+    const elSLA = document.getElementById('metric-sla-val');
+    const elWeight = document.getElementById('metric-weight-val');
 
-    if (elSales) elSales.textContent = Number(m.sales).toFixed(3);
-    if (elSalesChg) elSalesChg.textContent = `${m.sales_change} Since last week`;
-    if (elEarn) elEarn.textContent = m.earnings_formatted || `$${m.earnings}`;
-    if (elEarnChg) elEarnChg.textContent = `${m.earnings_change} Since last week`;
-    if (elVisit) elVisit.textContent = Number(m.visitors).toFixed(3);
-    if (elVisitChg) elVisitChg.textContent = `${m.visitors_change} Since last week`;
-    if (elOrders) elOrders.textContent = m.orders;
-    if (elOrdersChg) elOrdersChg.textContent = `${m.orders_change} Since last week`;
+    if (elActive) elActive.textContent = m.active_shipments;
+    if (elRev) {
+      elRev.setAttribute('data-inr-value', m.total_revenue);
+      elRev.textContent = CRMGMT.formatCurrency(m.total_revenue);
+    }
+    if (elSLA) elSLA.textContent = m.sla_rate;
+    if (elWeight) elWeight.textContent = `${m.total_weight} kg`;
   },
 
   renderSplineChart(movementData) {
@@ -109,12 +109,12 @@ const DashboardModule = {
       data: {
         labels: labels,
         datasets: [{
-          label: 'Parcels in Movement',
+          label: 'Consignments Dispatched',
           data: values,
           borderColor: '#3b7ddd',
           backgroundColor: gradient,
           fill: true,
-          tension: 0.42, // Smooth cubic spline matching screenshot
+          tension: 0.42,
           borderWidth: 2.8,
           pointBackgroundColor: '#3b7ddd',
           pointBorderColor: '#ffffff',
@@ -143,7 +143,7 @@ const DashboardModule = {
           },
           y: {
             min: 1000,
-            max: 4000,
+            max: 6000,
             ticks: {
               stepSize: 1000,
               color: '#94a3b8',
@@ -170,14 +170,44 @@ const DashboardModule = {
     this.donutChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Chrome / Delivered', 'Firefox / In-Transit', 'Edge / Out for Delivery', 'Other / Exceptions'],
+        labels: ['Delivered', 'In Transit', 'Out for Delivery', 'Hold / Exception'],
         datasets: [{
           data: [
-            bd?.chrome_delivered || 4306,
-            bd?.firefox_intransit || 3801,
-            bd?.edge_outfordelivery || 1689,
-            bd?.other_exceptions || 3251
+            bd?.delivered || 1,
+            bd?.in_transit || 1,
+            bd?.out_for_delivery || 1,
+            bd?.exceptions || 1
           ],
+          backgroundColor: [
+            '#10b981', // Delivered green
+            '#3b7ddd', // Transit blue
+            '#f59e0b', // Out for delivery amber
+            '#ef4444'  // Exception red
+          ],
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    // Update legend values
+    const delEl = document.getElementById('donut-stat-delivered');
+    const transEl = document.getElementById('donut-stat-transit');
+    const outEl = document.getElementById('donut-stat-out');
+    const excEl = document.getElementById('donut-stat-exceptions');
+    if (delEl) delEl.textContent = bd?.delivered || 1;
+    if (transEl) transEl.textContent = bd?.in_transit || 1;
+    if (outEl) outEl.textContent = bd?.out_for_delivery || 1;
+    if (excEl) excEl.textContent = bd?.exceptions || 1;
+  },
           backgroundColor: [
             '#3b7ddd', // Chrome blue
             '#dc3545', // Firefox / transit red

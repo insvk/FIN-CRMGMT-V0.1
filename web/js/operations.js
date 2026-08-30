@@ -215,6 +215,78 @@ const OperationsModule = {
   },
 
   // =========================================================================
+  // PROFILE PICTURE (PFP) CUSTOMIZER FOR ADMIN & ALL USERS
+  // =========================================================================
+  pfpTargetUserId: null,
+  pfpSelectedUrl: '',
+
+  openPfpModal(userId, userName) {
+    this.pfpTargetUserId = userId || CRMGMT.state.currentUser?.id;
+    const name = userName || CRMGMT.state.currentUser?.full_name || 'User';
+    const role = CRMGMT.state.currentUser?.role || 'super_admin';
+    const currentPfp = CRMGMT.getPfp(this.pfpTargetUserId, role);
+    this.pfpSelectedUrl = currentPfp;
+
+    const titleEl = document.getElementById('pfp-modal-title');
+    const previewImg = document.getElementById('pfp-preview-img');
+    const urlInput = document.getElementById('pfp-url-input');
+
+    if (titleEl) titleEl.textContent = `Customize Profile Picture: ${name}`;
+    if (previewImg) previewImg.src = currentPfp;
+    if (urlInput) urlInput.value = currentPfp.startsWith('data:') ? '' : currentPfp;
+
+    this.openModal('modal-edit-pfp');
+  },
+
+  handlePfpFileUpload(input) {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        this.pfpSelectedUrl = dataUrl;
+        const previewImg = document.getElementById('pfp-preview-img');
+        if (previewImg) previewImg.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+  },
+
+  handlePfpUrlChange(url) {
+    if (url && url.trim().length > 5) {
+      this.pfpSelectedUrl = url.trim();
+      const previewImg = document.getElementById('pfp-preview-img');
+      if (previewImg) previewImg.src = this.pfpSelectedUrl;
+    }
+  },
+
+  selectPresetPfp(url, el) {
+    this.pfpSelectedUrl = url;
+    const previewImg = document.getElementById('pfp-preview-img');
+    const urlInput = document.getElementById('pfp-url-input');
+    if (previewImg) previewImg.src = url;
+    if (urlInput) urlInput.value = url;
+
+    document.querySelectorAll('.pfp-preset-item').forEach(i => i.classList.remove('selected'));
+    if (el) el.classList.add('selected');
+  },
+
+  saveCustomPfp() {
+    if (!this.pfpSelectedUrl) {
+      CRMGMT.toast('Please select or upload a valid photo.', 'warning');
+      return;
+    }
+
+    CRMGMT.setPfp(this.pfpTargetUserId, this.pfpSelectedUrl);
+    CRMGMT.toast('Profile picture updated successfully!', 'success');
+    this.closeModal('modal-edit-pfp');
+
+    if (CRMGMT.state.currentView === 'users') {
+      this.loadUsers();
+    }
+  },
+
+  // =========================================================================
   // USER ACCOUNTS MANAGEMENT & PROVISIONING (Admin God-Mode Access)
   // =========================================================================
   users: [],
@@ -248,11 +320,17 @@ const OperationsModule = {
       else if (u.role === 'enterprise_customer') roleBadge = 'badge-success';
 
       const isActive = u.is_active !== false;
+      const userPfp = CRMGMT.getPfp(u.id, u.role);
 
       tr.innerHTML = `
         <td style="padding: 12px 16px;">
-          <div style="font-weight: 700; color: #1e293b;">${u.full_name}</div>
-          <div style="font-size: 0.76rem; color: #64748b;">${u.email}</div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="${userPfp}" alt="${u.full_name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1.5px solid #cbd5e1;" />
+            <div>
+              <div style="font-weight: 700; color: #1e293b;">${u.full_name}</div>
+              <div style="font-size: 0.76rem; color: #64748b;">${u.email}</div>
+            </div>
+          </div>
         </td>
         <td style="padding: 12px 16px;">
           <span class="badge ${roleBadge}">${u.role.replace(/_/g, ' ').toUpperCase()}</span>
@@ -268,7 +346,10 @@ const OperationsModule = {
             ${isActive ? 'ACTIVE' : 'SUSPENDED'}
           </span>
         </td>
-        <td style="padding: 12px 16px; display: flex; gap: 8px;">
+        <td style="padding: 12px 16px; display: flex; gap: 8px; align-items: center;">
+          <button class="btn btn-outline btn-sm" onclick="OperationsModule.openPfpModal('${u.id}', '${u.full_name}')" title="Change profile picture">
+            📸 Edit PFP
+          </button>
           <button class="btn btn-primary btn-sm" onclick="OperationsModule.impersonateUser('${u.id}')" title="Log In directly as this user">
             🔑 Log In As
           </button>
