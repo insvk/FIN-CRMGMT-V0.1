@@ -159,15 +159,17 @@ static void seed_default_memory_db(void) {
         UserRole role;
         const char *hub;
     } users_data[] = {
-        {"u0000000-0000-0000-0000-000000000001", "admin@crmgmt.io", "SIMATS Chief Systems Administrator", "+91 98400 11223", "crm_master_key_8f3a9e22", ROLE_SUPER_ADMIN, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000002", "hub.chennai@crmgmt.io", "Saveetha Central Hub Operations Manager", "+91 98401 22334", "crm_hub_che_key_44b1c", ROLE_HUB_MANAGER, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000003", "agent.che01@crmgmt.io", "SIMATS Dispatch & Fleet Unit 01", "+91 98402 33445", "crm_agent_che_12345", ROLE_DELIVERY_AGENT, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000004", "enterprise@saveetha.com", "Saveetha Biomedical & Healthcare Procurement", "+91 98403 44556", "crm_ent_sav_99a8b7", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000005", "customer@gmail.com", "Verified Retail Consignee", "+91 98404 55667", "", ROLE_STANDARD_CUSTOMER, ""}
+        {"u0000000-0000-0000-0000-000000000001", "admin@crmgmt.io", "Naresh S (SIMATS Chief Systems Administrator)", "+91 98400 11223", "crm_master_key_8f3a9e22", ROLE_SUPER_ADMIN, "a0000000-0000-0000-0000-000000000001"},
+        {"u0000000-0000-0000-0000-000000000002", "hub.chennai@crmgmt.io", "Karthik Ramaswamy (Chennai Hub Operations Lead)", "+91 98401 22334", "crm_hub_che_key_44b1c", ROLE_HUB_MANAGER, "a0000000-0000-0000-0000-000000000001"},
+        {"u0000000-0000-0000-0000-000000000003", "agent.che01@crmgmt.io", "Vigneshwaran M (Fleet Dispatch Agent)", "+91 98402 33445", "crm_agent_che_12345", ROLE_DELIVERY_AGENT, "a0000000-0000-0000-0000-000000000001"},
+        {"u0000000-0000-0000-0000-000000000004", "enterprise@saveetha.com", "Dr. Meenakshi Sundaram (Saveetha BioMed Procurement)", "+91 98403 44556", "crm_ent_sav_99a8b7", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000001"},
+        {"u0000000-0000-0000-0000-000000000005", "ananya.sharma@gmail.com", "Ananya Sharma (Retail Consignee & Client)", "+91 98404 55667", "", ROLE_STANDARD_CUSTOMER, ""},
+        {"u0000000-0000-0000-0000-000000000006", "rajesh.verma@infosys.com", "Rajesh Verma (VP Supply Chain, Infosys)", "+91 98110 33441", "crm_ent_inf_88c42a", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000002"},
+        {"u0000000-0000-0000-0000-000000000007", "arvind.swaminathan@apollo.org", "Dr. Arvind Swaminathan (Apollo Hospitals)", "+91 98840 99887", "", ROLE_STANDARD_CUSTOMER, "a0000000-0000-0000-0000-000000000001"}
     };
 
-    g_user_count = 5;
-    for (int i = 0; i < 5; i++) {
+    g_user_count = 7;
+    for (int i = 0; i < 7; i++) {
         snprintf(g_users[i].id, sizeof(g_users[i].id), "%s", users_data[i].id);
         snprintf(g_users[i].email, sizeof(g_users[i].email), "%s", users_data[i].email);
         snprintf(g_users[i].password_hash, sizeof(g_users[i].password_hash), "pbkdf2_sha256$260000$crmgmt_salt$8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92");

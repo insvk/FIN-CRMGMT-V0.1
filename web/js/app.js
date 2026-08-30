@@ -119,7 +119,7 @@ const CRMGMT = {
           user: {
             id: 'u0000000-0000-0000-0000-000000000001',
             email: body.email || 'admin@crmgmt.io',
-            full_name: 'SIMATS Chief Systems Administrator',
+            full_name: 'Naresh S (SIMATS Chief Systems Administrator)',
             role: body.email?.includes('admin') ? 'super_admin' : (body.email?.includes('hub') ? 'hub_manager' : 'standard_customer'),
             phone: '+91 98400 11223'
           }
@@ -305,7 +305,7 @@ const CRMGMT = {
     const u = this.state.currentUser;
     if (!u) return;
 
-    document.querySelectorAll('.user-name-display').forEach(el => el.textContent = u.full_name || 'SIMATS Chief Systems Administrator');
+    document.querySelectorAll('.user-name-display').forEach(el => el.textContent = u.full_name || 'Naresh S (SIMATS Chief Systems Administrator)');
     document.querySelectorAll('.user-role-display').forEach(el => el.textContent = (u.role || 'Super Admin').replace('_', ' ').toUpperCase());
     document.querySelectorAll('.user-email-display').forEach(el => el.textContent = u.email);
 
