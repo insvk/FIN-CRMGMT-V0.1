@@ -45,14 +45,14 @@
             <div class="form-group">
               <label class="form-label" for="login-email">Email Address or Username<span class="req">*</span></label>
               <div class="input-wrapper">
-                <input type="text" id="login-email" class="form-input" placeholder="Enter your mail address or username" value="admin@crmgmt.io" required />
+                <input type="text" id="login-email" class="form-input" placeholder="Enter your mail address or username" required />
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="login-password">Password<span class="req">*</span></label>
               <div class="input-wrapper">
-                <input type="password" id="login-password" class="form-input" placeholder="Enter password" value="Admin@123" required />
+                <input type="password" id="login-password" class="form-input" placeholder="Enter password" required />
                 <button type="button" id="login-pw-toggle" class="pw-toggle-btn" title="Toggle password visibility">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -344,7 +344,7 @@
               <div style="font-size: 0.85rem; color: #64748b;">Consignment Dispatch • Live Route Telemetry • GST Tax Invoices • Address Book</div>
             </div>
             <div class="dash-actions">
-              <button class="btn btn-outline" onclick="OperationsModule.openModal('modal-bulk-csv')">📁 Bulk CSV Import</button>
+              <button class="btn btn-outline" onclick="CRMGMT.navigate('bulk_dispatch')">📁 Bulk CSV Import</button>
               <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ Quick Dispatch</button>
             </div>
           </div>

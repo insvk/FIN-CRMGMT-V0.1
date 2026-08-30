@@ -168,10 +168,12 @@ const OperationsModule = {
   },
 
   // Checkpoint Scanner
-  initScanner() {
-    // Fill tracking dropdown with active shipments
+  async initScanner() {
+    if (!this.shipments || this.shipments.length === 0) {
+      await this.loadShipments();
+    }
     const select = document.getElementById('scan-tracking-select');
-    if (select && this.shipments.length > 0) {
+    if (select) {
       select.innerHTML = '<option value="">-- Select Consignment --</option>';
       this.shipments.forEach(s => {
         const opt = document.createElement('option');
