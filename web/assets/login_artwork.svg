@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Rich Curated Palette Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e0a38"/>
+      <stop offset="40%" stop-color="#191254"/>
+      <stop offset="100%" stop-color="#0a1a44"/>
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffeb3b"/>
+      <stop offset="60%" stop-color="#fbc02d"/>
+      <stop offset="100%" stop-color="#f57f17"/>
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#00838f"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c4dff"/>
+      <stop offset="100%" stop-color="#4a148c"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2979ff"/>
+      <stop offset="100%" stop-color="#1a237e"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e676"/>
+      <stop offset="100%" stop-color="#004d40"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Midnight Base Canvas -->
+  <rect width="1000" height="1200" fill="url(#bgGrad)"/>
+
+  <!-- Top-Left & Mid-Left Geometric Cubist Mosaic -->
+  <g id="cubist-shapes">
+    <!-- Big Circle top-left -->
+    <circle cx="160" cy="220" r="140" fill="#00bcd4" opacity="0.95"/>
+    <path d="M160,80 A140,140 0 0,1 300,220 L160,220 Z" fill="#00838f"/>
+    <circle cx="160" cy="220" r="70" fill="#18ffff"/>
+
+    <!-- Purple / Blue Background Polygons -->
+    <polygon points="0,0 450,0 350,380 0,320" fill="#311b92" opacity="0.85"/>
+    <polygon points="450,0 750,0 600,320 350,380" fill="#1a237e"/>
+    <polygon points="0,320 350,380 200,620 0,550" fill="#4527a0"/>
+    <polygon points="350,380 620,440 450,680 200,620" fill="#00b0ff" opacity="0.9"/>
+    
+    <!-- Deep Violet Triangle & Arcs -->
+    <polygon points="200,620 450,680 320,950 100,850" fill="#651fff"/>
+    <circle cx="320" cy="740" r="110" fill="#00e5ff"/>
+    <path d="M320,630 A110,110 0 0,1 430,740 L320,740 Z" fill="#0097a7"/>
+  </g>
+
+  <!-- Golden Radiant Sunburst Top-Right (Faithful to Reference Image 2) -->
+  <g id="golden-sunburst" transform="translate(760, 360)">
+    <!-- Deep Blue circular aura -->
+    <circle cx="0" cy="0" r="320" fill="#1a1464" opacity="0.6"/>
+
+    <!-- Sharp Dramatic Yellow Sun Rays -->
+    <!-- Cardinal & Diagonal Primary Long Rays -->
+    <polygon points="0,0 -28,-360 28,-360" fill="url(#sunGrad)"/>
+    <polygon points="0,0 -360,-28 -360,28" fill="url(#sunGrad)"/>
+    <polygon points="0,0 -28,360 28,360" fill="url(#sunGrad)"/>
+    <polygon points="0,0 360,-28 360,28" fill="url(#sunGrad)"/>
+
+    <polygon points="0,0 -260,-260 -210,-290" fill="url(#sunGrad)" transform="rotate(45)"/>
+    <polygon points="0,0 -260,260 -210,290" fill="url(#sunGrad)" transform="rotate(45)"/>
+    <polygon points="0,0 260,-260 210,-290" fill="url(#sunGrad)" transform="rotate(45)"/>
+    <polygon points="0,0 260,260 210,290" fill="url(#sunGrad)" transform="rotate(45)"/>
+
+    <!-- Intermediate Rays (16-point burst) -->
+    <g fill="#ffd600">
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(22.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(67.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(112.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(157.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(202.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(247.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(292.5)"/>
+      <polygon points="0,0 -16,-320 16,-320" transform="rotate(337.5)"/>
+    </g>
+
+    <!-- Sun Core Structure -->
+    <circle cx="0" cy="0" r="95" fill="#f57f17"/>
+    <circle cx="0" cy="0" r="80" fill="#ffd600"/>
+    <circle cx="0" cy="0" r="55" fill="#ffffff" opacity="0.95"/>
+    <circle cx="0" cy="0" r="30" fill="#f57f17"/>
+  </g>
+
+  <!-- Flowing Dynamic Central Wave Ribbons (Teal / Cyan / Mint Green) -->
+  <g id="wave-ribbons">
+    <!-- Emerald / Teal Flowing S-Curves -->
+    <path d="M0,450 C250,380 400,550 700,420 C850,350 950,400 1000,430 L1000,530 C900,490 800,450 680,510 C420,630 220,470 0,550 Z" fill="#00e676" opacity="0.9"/>
+    <path d="M0,490 C220,430 380,580 650,470 C800,410 920,460 1000,490 L1000,580 C900,540 760,490 620,560 C380,680 180,520 0,600 Z" fill="#00b0ff" opacity="0.95"/>
+    <path d="M0,540 C180,480 340,620 580,520 C720,460 880,510 1000,550 L1000,640 C850,590 700,540 550,610 C320,720 140,570 0,650 Z" fill="#1de9b6" opacity="0.85"/>
+  </g>
+
+  <!-- Bottom Lower Cubist Waves, Circles & Spiral Elements -->
+  <g id="lower-elements">
+    <!-- Right side deep blue / purple triangles -->
+    <polygon points="650,550 1000,550 1000,900 750,820" fill="#304ffe"/>
+    <polygon points="750,820 1000,900 1000,1200 680,1200" fill="#6200ea"/>
+    
+    <!-- Big overlapping cyan and purple circles -->
+    <circle cx="850" cy="850" r="180" fill="#0091ea" opacity="0.8"/>
+    <circle cx="850" cy="850" r="120" fill="#aa00ff"/>
+    <circle cx="850" cy="850" r="60" fill="#00e5ff"/>
+
+    <!-- Bottom Left Scalloped Ocean Waves Motif -->
+    <g fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round">
+      <path d="M50,1100 C75,1070 100,1070 125,1100 C150,1130 175,1130 200,1100 C225,1070 250,1070 275,1100 C300,1130 325,1130 350,1100 C375,1070 400,1070 425,1100 C450,1130 475,1130 500,1100 C525,1070 550,1070 575,1100 C600,1130 625,1130 650,1100"/>
+      <path d="M25,1145 C50,1115 75,1115 100,1145 C125,1175 150,1175 175,1145 C200,1115 225,1115 250,1145 C275,1175 300,1175 325,1145 C350,1115 375,1115 400,1145 C425,1175 450,1175 475,1145 C500,1115 525,1115 550,1145 C575,1175 600,1175 625,1145"/>
+    </g>
+
+    <!-- Swirling Circles & Eye Accents -->
+    <circle cx="920" cy="780" r="45" fill="#00e676"/>
+    <circle cx="920" cy="780" r="22" fill="#004d40"/>
+    <circle cx="680" cy="750" r="35" fill="#ffd600"/>
+
+    <!-- Bottom Left Polygon Facets -->
+    <polygon points="0,850 320,950 180,1200 0,1200" fill="#00b0ff" opacity="0.9"/>
+    <polygon points="320,950 680,1200 180,1200" fill="#651fff"/>
+  </g>
+</svg>

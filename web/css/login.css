@@ -1,0 +1,338 @@
+/* CRMGMT v0.1 - Saveetha Login Page CSS (100% Faithful to Reference Image 2) */
+
+.auth-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+/* Left Form Pane (50%) */
+.auth-left-pane {
+  flex: 1;
+  max-width: 50%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 60px;
+  background-color: #ffffff;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Saveetha Official Header Logo */
+.auth-header-logo {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.auth-header-logo img,
+.auth-header-logo svg {
+  max-width: 100%;
+  max-height: 85px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Headings */
+.auth-title {
+  font-family: var(--font-heading);
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #1a202c;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8f9bb3;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 28px;
+  line-height: 1.4;
+}
+
+/* Form Fields */
+.form-group {
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 6px;
+}
+
+.form-label .req {
+  color: #e53e3e;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.92rem;
+  font-family: var(--font-main);
+  color: #2d3748;
+  background-color: #ffffff;
+  border: 1px solid #d2d6dc;
+  border-radius: 6px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-input::placeholder {
+  color: #a0aec0;
+}
+
+.form-input:focus {
+  border-color: var(--login-btn);
+  box-shadow: 0 0 0 3px rgba(80, 70, 228, 0.15);
+}
+
+/* Show/Hide Password Eye Toggle */
+.pw-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pw-toggle-btn:hover {
+  color: #2d3748;
+}
+
+/* Checkbox & Forgot Password Row */
+.form-options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 22px;
+  font-size: 0.85rem;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a5568;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.remember-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--login-btn);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.forgot-pw-link {
+  color: var(--login-btn);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.forgot-pw-link:hover {
+  text-decoration: underline;
+}
+
+/* Log In Action Button */
+.btn-login-main {
+  width: 100%;
+  padding: 13px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--login-btn);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(80, 70, 228, 0.28);
+  transition: all var(--transition-fast);
+}
+
+.btn-login-main:hover {
+  background-color: var(--login-btn-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(80, 70, 228, 0.38);
+}
+
+.btn-login-main:active {
+  transform: translateY(0);
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 22px 0;
+  color: #a0aec0;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.auth-divider span {
+  padding: 0 14px;
+}
+
+/* Google Sign-in Button */
+.btn-google-login {
+  width: 100%;
+  padding: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-google-login:hover {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+  color: #1a202c;
+}
+
+.btn-google-login svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Footer Link */
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.86rem;
+  color: #4a5568;
+}
+
+.auth-footer a {
+  color: var(--login-btn);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Quick Fill Demo Roles Bar */
+.demo-accounts-bar {
+  margin-top: 24px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.76rem;
+}
+
+.demo-accounts-bar .demo-title {
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-pill-btn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.demo-pill-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+/* Right Illustration Pane (50%) */
+.auth-right-pane {
+  flex: 1;
+  max-width: 50%;
+  height: 100%;
+  background: #0e0a38;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-right-pane img,
+.auth-right-pane svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .auth-container {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .auth-left-pane {
+    max-width: 100%;
+    width: 100%;
+    padding: 30px 20px;
+  }
+  .auth-right-pane {
+    display: none;
+  }
+}

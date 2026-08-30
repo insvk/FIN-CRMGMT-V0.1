@@ -1,0 +1,246 @@
+/* CRMGMT v0.1 - Global Styles & Design System Tokens */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  /* Brand & Theme Colors */
+  --primary: #3b7ddd;
+  --primary-hover: #2f65b3;
+  --primary-light: #e8f1fd;
+  
+  --login-btn: #5046e4;
+  --login-btn-hover: #4338ca;
+  --saveetha-blue: #0d3b66;
+  
+  --sidebar-bg: #1c2333;
+  --sidebar-active: #222b40;
+  --sidebar-text: #939aa8;
+  --sidebar-text-hover: #e2e8f0;
+  --sidebar-heading: #626d82;
+  
+  --bg-main: #f5f7fb;
+  --bg-card: #ffffff;
+  --border-color: #e5e9f2;
+  --border-light: #f1f3f9;
+  
+  --text-dark: #2b354f;
+  --text-muted: #6c757d;
+  --text-light: #94a3b8;
+  
+  --success: #1cbb8c;
+  --success-light: #e0f9f1;
+  --danger: #dc3545;
+  --danger-light: #fbebee;
+  --warning: #fcb92c;
+  --warning-light: #fff8e5;
+  --info: #17a2b8;
+  --info-light: #e3f7fa;
+
+  /* Typography */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', var(--font-main);
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Shadows */
+  --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.04);
+  --shadow-md: 0 .5rem 1rem rgba(0,0,0,.06);
+  --shadow-lg: 0 1rem 2.5rem rgba(18,38,63,.08);
+  --shadow-card: 0 0 .875rem 0 rgba(33,37,41,.05);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.25s ease-in-out;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-main);
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Button Utilities */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.35rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(59, 125, 221, 0.35);
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  border-color: #d2d6dc;
+  color: #4b5563;
+}
+
+.btn-outline:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background-color: #179e77;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.775rem;
+  border-radius: 0.25rem;
+}
+
+/* Badge Utilities */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-pro {
+  background: linear-gradient(135deg, #3b7ddd 0%, #6366f1 100%);
+  color: #ffffff;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  font-weight: 800;
+}
+
+.badge-success {
+  background-color: var(--success-light);
+  color: var(--success);
+}
+
+.badge-danger {
+  background-color: var(--danger-light);
+  color: var(--danger);
+}
+
+.badge-warning {
+  background-color: var(--warning-light);
+  color: #b7791f;
+}
+
+.badge-info {
+  background-color: var(--info-light);
+  color: var(--info);
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 280px;
+  max-width: 420px;
+  background: #ffffff;
+  border-left: 4px solid var(--primary);
+  border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  padding: 12px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.85rem;
+  animation: slideInRight 0.3s ease;
+  transition: opacity 0.3s ease;
+}
+
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--danger); }
+.toast.warning { border-left-color: var(--warning); }
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Floating Role Switcher */
+.role-switcher-badge {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9000;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  padding: 6px 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.role-switcher-badge select {
+  border: none;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+  outline: none;
+}
