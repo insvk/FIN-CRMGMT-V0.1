@@ -302,6 +302,22 @@ static void seed_default_memory_db(void) {
     snprintf(g_audit_logs[0].created_at, sizeof(g_audit_logs[0].created_at), "%s", now_str);
 }
 
+static void url_decode_inplace(char *dst, const char *src, size_t max_len) {
+    size_t d = 0;
+    while (*src && d + 1 < max_len) {
+        if (*src == '%' && src[1] && src[2]) {
+            unsigned int val = 0;
+            if (sscanf(src + 1, "%2x", &val) == 1) {
+                dst[d++] = (char)val;
+                src += 3;
+                continue;
+            }
+        }
+        dst[d++] = *src++;
+    }
+    dst[d] = '\0';
+}
+
 static void sanitize_pg_conn_string(const char *in, char *out, size_t max_len) {
     if (!in || !out || max_len == 0) return;
     
@@ -337,16 +353,21 @@ static void sanitize_pg_conn_string(const char *in, char *out, size_t max_len) {
     char *user_pass = copy;
     char *host_part = last_at + 1;
 
-    char user[256] = "postgres";
-    char pass[256] = "";
+    char raw_user[256] = "postgres";
+    char raw_pass[256] = "";
     char *colon = strchr(user_pass, ':');
     if (colon) {
         *colon = '\0';
-        snprintf(user, sizeof(user), "%s", user_pass);
-        snprintf(pass, sizeof(pass), "%s", colon + 1);
+        snprintf(raw_user, sizeof(raw_user), "%s", user_pass);
+        snprintf(raw_pass, sizeof(raw_pass), "%s", colon + 1);
     } else {
-        snprintf(user, sizeof(user), "%s", user_pass);
+        snprintf(raw_user, sizeof(raw_user), "%s", user_pass);
     }
+
+    char user[256] = {0};
+    char pass[256] = {0};
+    url_decode_inplace(user, raw_user, sizeof(user));
+    url_decode_inplace(pass, raw_pass, sizeof(pass));
 
     char host[256] = "localhost";
     char port[32] = "5432";
