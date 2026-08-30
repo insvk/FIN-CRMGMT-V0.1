@@ -212,21 +212,20 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
             cJSON *hub = cJSON_GetObjectItem(req, "allocated_hub_id");
 
             if (uid && uid->valuestring) {
-                User *u = db_find_user_by_id(uid->valuestring);
+                UserRecord *u = db_find_user_by_id(uid->valuestring);
                 if (u) {
                     if (name && name->valuestring) snprintf(u->full_name, sizeof(u->full_name), "%s", name->valuestring);
                     if (email && email->valuestring) snprintf(u->email, sizeof(u->email), "%s", email->valuestring);
                     if (phone && phone->valuestring) snprintf(u->phone, sizeof(u->phone), "%s", phone->valuestring);
                     if (role_str && role_str->valuestring) {
-                        u->role = parse_role(role_str->valuestring);
+                        u->role = string_to_role(role_str->valuestring);
                         snprintf(u->role_name, sizeof(u->role_name), "%s", role_to_string(u->role));
                     }
                     if (hub && hub->valuestring) snprintf(u->allocated_hub_id, sizeof(u->allocated_hub_id), "%s", hub->valuestring);
 
                     resp_json = cJSON_CreateObject();
                     cJSON_AddBoolToObject(resp_json, "success", true);
-                    cJSON_AddStringToObject(resp_json, "message", "User profile updated.");
-                    cJSON_AddItemToObject(resp_json, "user", user_to_json(u));
+                    cJSON_AddStringToObject(resp_json, "message", "User profile updated successfully.");
                 } else {
                     *status_code_out = 404;
                     resp_json = cJSON_CreateObject();
