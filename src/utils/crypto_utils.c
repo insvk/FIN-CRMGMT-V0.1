@@ -170,6 +170,43 @@ int crypto_hex_to_bytes(const char *hex, uint8_t *bytes, size_t max_len) {
 static const char b64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char b64url_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
+static int b64_char_value(char c) {
+    if (c >= 'A' && c <= 'Z') return c - 'A';
+    if (c >= 'a' && c <= 'z') return c - 'a' + 26;
+    if (c >= '0' && c <= '9') return c - '0' + 52;
+    if (c == '+' || c == '-') return 62;
+    if (c == '/' || c == '_') return 63;
+    return -1;
+}
+
+int crypto_base64_decode(const char *input, uint8_t *output, size_t max_len) {
+    if (!input || !output) return -1;
+    size_t in_len = strlen(input);
+    size_t out_idx = 0;
+    uint32_t buf = 0;
+    int bits = 0;
+
+    for (size_t i = 0; i < in_len; i++) {
+        if (input[i] == '=' || input[i] == '\r' || input[i] == '\n' || input[i] == ' ') continue;
+        int val = b64_char_value(input[i]);
+        if (val < 0) continue;
+
+        buf = (buf << 6) | (uint32_t)val;
+        bits += 6;
+
+        if (bits >= 8) {
+            bits -= 8;
+            if (out_idx >= max_len) return -1;
+            output[out_idx++] = (uint8_t)((buf >> bits) & 0xFF);
+        }
+    }
+    return (int)out_idx;
+}
+
+int crypto_base64url_decode(const char *input, uint8_t *output, size_t max_len) {
+    return crypto_base64_decode(input, output, max_len);
+}
+
 int crypto_base64_encode(const uint8_t *data, size_t len, char *output, size_t max_len) {
     size_t olen = 4 * ((len + 2) / 3);
     if (max_len < olen + 1) return -1;
