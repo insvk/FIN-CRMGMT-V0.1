@@ -302,13 +302,89 @@ static void seed_default_memory_db(void) {
     snprintf(g_audit_logs[0].created_at, sizeof(g_audit_logs[0].created_at), "%s", now_str);
 }
 
+static void sanitize_pg_conn_string(const char *in, char *out, size_t max_len) {
+    if (!in || !out || max_len == 0) return;
+    
+    // If not a URL scheme, copy as is
+    if (strncmp(in, "postgresql://", 13) != 0 && strncmp(in, "postgres://", 11) != 0) {
+        snprintf(out, max_len, "%s", in);
+        return;
+    }
+
+    const char *p = in;
+    if (strncmp(p, "postgresql://", 13) == 0) p += 13;
+    else if (strncmp(p, "postgres://", 11) == 0) p += 11;
+
+    char copy[1024];
+    snprintf(copy, sizeof(copy), "%s", p);
+
+    // Find the LAST '@' before '/' or '?'
+    char *slash = strchr(copy, '/');
+    char *qmark = strchr(copy, '?');
+    char *end_search = slash ? slash : (qmark ? qmark : copy + strlen(copy));
+
+    char *last_at = NULL;
+    for (char *c = copy; c < end_search; c++) {
+        if (*c == '@') last_at = c;
+    }
+
+    if (!last_at) {
+        snprintf(out, max_len, "%s", in);
+        return;
+    }
+
+    *last_at = '\0';
+    char *user_pass = copy;
+    char *host_part = last_at + 1;
+
+    char user[256] = "postgres";
+    char pass[256] = "";
+    char *colon = strchr(user_pass, ':');
+    if (colon) {
+        *colon = '\0';
+        snprintf(user, sizeof(user), "%s", user_pass);
+        snprintf(pass, sizeof(pass), "%s", colon + 1);
+    } else {
+        snprintf(user, sizeof(user), "%s", user_pass);
+    }
+
+    char host[256] = "localhost";
+    char port[32] = "5432";
+    char dbname[256] = "postgres";
+
+    char *db_slash = strchr(host_part, '/');
+    if (db_slash) {
+        *db_slash = '\0';
+        char *db_name_start = db_slash + 1;
+        char *db_qmark = strchr(db_name_start, '?');
+        if (db_qmark) *db_qmark = '\0';
+        if (strlen(db_name_start) > 0) {
+            snprintf(dbname, sizeof(dbname), "%s", db_name_start);
+        }
+    }
+
+    char *host_colon = strchr(host_part, ':');
+    if (host_colon) {
+        *host_colon = '\0';
+        snprintf(host, sizeof(host), "%s", host_part);
+        snprintf(port, sizeof(port), "%s", host_colon + 1);
+    } else {
+        snprintf(host, sizeof(host), "%s", host_part);
+    }
+
+    snprintf(out, max_len, "host='%s' port='%s' dbname='%s' user='%s' password='%s' sslmode='require'",
+             host, port, dbname, user, pass);
+}
+
 int db_init(const char *conn_string) {
     seed_default_memory_db();
     
 #ifdef WITH_LIBPQ
     if (conn_string && strlen(conn_string) > 0) {
-        printf("[DB] Connecting to PostgreSQL via libpq: %s\n", conn_string);
-        g_pg_conn = PQconnectdb(conn_string);
+        char clean_conn[2048] = {0};
+        sanitize_pg_conn_string(conn_string, clean_conn, sizeof(clean_conn));
+        printf("[DB] Connecting to PostgreSQL via libpq (host/user sanitized)...\n");
+        g_pg_conn = PQconnectdb(clean_conn);
         if (PQstatus(g_pg_conn) == CONNECTION_OK) {
             printf("[DB] Successfully connected to Supabase PostgreSQL.\n");
             g_db_connected = true;
