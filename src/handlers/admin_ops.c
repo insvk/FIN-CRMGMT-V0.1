@@ -70,7 +70,7 @@ cJSON *handle_admin_agent_dispatch(const UserRecord *caller, const char *shipmen
     // Set to OUT_FOR_DELIVERY
     UserRecord *agent = db_find_user_by_id(agent_id);
     char rem[256];
-    snprintf(rem, sizeof(rem), "Assigned to delivery agent: %s", agent ? agent->full_name : "Agent");
+    snprintf(rem, sizeof(rem), "Assigned to delivery agent: %.200s", agent ? agent->full_name : "Agent");
     db_update_shipment_status(shipment_id, STATUS_OUT_FOR_DELIVERY, rem, caller->id, 13.0827, 80.2707, "Local Delivery Hub");
 
     cJSON_AddBoolToObject(response, "success", true);

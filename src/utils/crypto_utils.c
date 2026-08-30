@@ -37,7 +37,7 @@ static const uint32_t K[64] = {
 #define SIG0(x) (ROR(x, 7) ^ ROR(x, 18) ^ ((x) >> 3))
 #define SIG1(x) (ROR(x, 17) ^ ROR(x, 19) ^ ((x) >> 10))
 
-static void sha256_transform(uint32_t state[8], const uint8_t data[64]) {
+static void sha256_transform(uint32_t state[8], const uint8_t *data) {
     uint32_t a, b, c, d, e, f, g, h, i, j, t1, t2, m[64];
     for (i = 0, j = 0; i < 16; ++i, j += 4)
         m[i] = ((uint32_t)data[j] << 24) | ((uint32_t)data[j + 1] << 16) | ((uint32_t)data[j + 2] << 8) | ((uint32_t)data[j + 3]);
@@ -111,6 +111,10 @@ void crypto_sha256(const uint8_t *data, size_t len, uint8_t output[SHA256_HASH_S
 }
 
 void crypto_hmac_sha256(const uint8_t *key, size_t key_len, const uint8_t *data, size_t data_len, uint8_t output[SHA256_HASH_SIZE]) {
+#ifdef WITH_OPENSSL
+    unsigned int out_len = SHA256_HASH_SIZE;
+    HMAC(EVP_sha256(), key, (int)key_len, data, data_len, output, &out_len);
+#else
     uint8_t k[64];
     memset(k, 0, sizeof(k));
     if (key_len > 64) {
@@ -137,6 +141,7 @@ void crypto_hmac_sha256(const uint8_t *key, size_t key_len, const uint8_t *data,
     sha256_update(&outer_ctx, k_opad, 64);
     sha256_update(&outer_ctx, inner_hash, 32);
     sha256_final(&outer_ctx, output);
+#endif
 }
 
 void crypto_bytes_to_hex(const uint8_t *bytes, size_t len, char *hex_output) {

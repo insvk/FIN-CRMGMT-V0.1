@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O3 -std=c17 -I./src
+CFLAGS = -Wall -Wextra -Wno-format-truncation -Wno-stringop-overread -O2 -std=c17 -I./src
 DEBUG_CFLAGS = -Wall -Wextra -g -O0 -std=c17 -I./src
 LIBS = -lpthread
 
