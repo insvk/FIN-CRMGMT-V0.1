@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <time.h>
 
 #define DEFAULT_JWT_SECRET "CRMGMT-JWT-SECRET-KEY-2026-X99"

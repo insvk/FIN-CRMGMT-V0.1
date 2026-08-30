@@ -1,5 +1,6 @@
 #include "admin_ops.h"
 #include "auth.h"
+#include "utils/crypto_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -109,7 +110,7 @@ cJSON *handle_admin_user_create(const UserRecord *caller, const char *email, con
     new_user.is_active = true;
 
     char hash[128];
-    auth_hash_password(password ? password : "Admin@123", "crmgmt_salt", hash, sizeof(hash));
+    crypto_hash_password(password ? password : "Admin@123", "crmgmt_salt", hash, sizeof(hash));
     snprintf(new_user.password_hash, sizeof(new_user.password_hash), "%s", hash);
 
     int res = db_create_user(&new_user);

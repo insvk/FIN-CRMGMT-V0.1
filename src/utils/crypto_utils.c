@@ -12,6 +12,7 @@
 #endif
 
 // --- Pure C SHA-256 Engine ---
+#ifndef WITH_OPENSSL
 typedef struct {
     uint32_t state[8];
     uint64_t count;
@@ -98,6 +99,7 @@ static void sha256_final(SHA256_CTX_INTERNAL *ctx, uint8_t digest[32]) {
         digest[i * 4 + 3] = (uint8_t)(ctx->state[i] & 0xff);
     }
 }
+#endif
 
 void crypto_sha256(const uint8_t *data, size_t len, uint8_t output[SHA256_HASH_SIZE]) {
 #ifdef WITH_OPENSSL

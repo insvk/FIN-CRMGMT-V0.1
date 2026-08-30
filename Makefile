@@ -13,7 +13,7 @@ LIBS += -lssl -lcrypto
 endif
 
 ifeq ($(WITH_LIBPQ),1)
-CFLAGS += -DWITH_LIBPQ
+CFLAGS += -DWITH_LIBPQ -I/usr/include/postgresql -I/usr/local/include/postgresql -I/usr/include/pgsql
 LIBS += -lpq
 endif
 
