@@ -160,10 +160,14 @@ const CRMGMT = {
     const mainApp = document.getElementById('view-main-app');
 
     // Deactivate all subviews
-    document.querySelectorAll('.dashboard-subview').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.view-section, .dashboard-subview').forEach(el => {
+      el.classList.remove('active');
+    });
 
     // Update URL hash without reload
-    window.location.hash = `#${viewName}`;
+    if (window.location.hash !== `#${viewName}`) {
+      window.location.hash = `#${viewName}`;
+    }
 
     if (viewName === 'login' || viewName === 'register') {
       if (authView) authView.style.display = 'flex';
@@ -190,7 +194,7 @@ const CRMGMT = {
       if (targetSubView) {
         targetSubView.classList.add('active');
       } else {
-        const defaultDash = document.getElementById(isCustomer ? 'subview-customer-dashboard' : 'subview-dashboard');
+        const defaultDash = document.getElementById(isCustomer ? 'subview-customer_dashboard' : 'subview-dashboard');
         if (defaultDash) defaultDash.classList.add('active');
       }
 
@@ -216,6 +220,8 @@ const CRMGMT = {
         window.OperationsModule.loadShipments();
       } else if (effectiveView === 'scanner' && window.OperationsModule) {
         window.OperationsModule.initScanner();
+      } else if (effectiveView === 'calculator' && window.OperationsModule) {
+        window.OperationsModule.initCalculator();
       } else if (effectiveView === 'users' && window.OperationsModule) {
         window.OperationsModule.loadUsers();
       } else if (effectiveView === 'invoices' && window.OperationsModule) {

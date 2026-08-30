@@ -635,11 +635,11 @@
 /* ==========================================================================
    6. Logistics Views (Public Tracking, Scanner, POD)
    ========================================================================== */
-.view-section {
-  display: none;
+.view-section, .dashboard-subview {
+  display: none !important;
 }
-.view-section.active {
-  display: block;
+.view-section.active, .dashboard-subview.active {
+  display: block !important;
 }
 
 /* Tracking Timeline */
