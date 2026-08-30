@@ -1,9 +1,12 @@
-/* CRMGMT v0.1 - Live Tracking, GPS Simulator & Proof of Delivery (POD) Controller */
+/* CRMGMT v0.1 - Live Tracking, GPS Simulator, Public Portal & POD Controller */
 
 const TrackingModule = {
   trackingMap: null,
   routePolyline: null,
   truckMarker: null,
+  publicTrackingMap: null,
+  publicRoutePolyline: null,
+  publicTruckMarker: null,
   sigCanvas: null,
   sigCtx: null,
   isDrawing: false,
@@ -29,6 +32,24 @@ const TrackingModule = {
         if (e.key === 'Enter') {
           const tid = trackInput.value.trim();
           if (tid) this.lookup(tid);
+        }
+      });
+    }
+
+    // Public tracker search
+    const pubTrackBtn = document.getElementById('btn-public-track-lookup');
+    const pubTrackInput = document.getElementById('input-public-track-id');
+    if (pubTrackBtn && pubTrackInput) {
+      pubTrackBtn.addEventListener('click', () => {
+        const tid = pubTrackInput.value.trim();
+        if (tid) this.lookupPublic(tid);
+        else CRMGMT.toast('Please enter a Tracking Number.', 'warning');
+      });
+
+      pubTrackInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const tid = pubTrackInput.value.trim();
+          if (tid) this.lookupPublic(tid);
         }
       });
     }
@@ -70,16 +91,24 @@ const TrackingModule = {
     const route = data.route || {};
 
     // Header Meta
-    document.getElementById('track-disp-id').textContent = s.tracking_id;
-    document.getElementById('track-disp-status').textContent = s.status.replace(/_/g, ' ');
-    document.getElementById('track-disp-sender').textContent = s.sender_name;
-    document.getElementById('track-disp-recip').textContent = s.recipient_name;
-    document.getElementById('track-disp-dest').textContent = s.recipient_address;
-    document.getElementById('track-disp-weight').textContent = `${s.weight_kg} kg`;
-    document.getElementById('track-disp-eta').textContent = s.estimated_delivery ? new Date(s.estimated_delivery).toLocaleString() : 'Within 24 Hours';
+    const elId = document.getElementById('track-disp-id');
+    const elStatus = document.getElementById('track-disp-status');
+    const elSender = document.getElementById('track-disp-sender');
+    const elRecip = document.getElementById('track-disp-recip');
+    const elDest = document.getElementById('track-disp-dest');
+    const elWeight = document.getElementById('track-disp-weight');
+    const elEta = document.getElementById('track-disp-eta');
+
+    if (elId) elId.textContent = s.tracking_id;
+    if (elStatus) elStatus.textContent = s.status.replace(/_/g, ' ');
+    if (elSender) elSender.textContent = s.sender_name;
+    if (elRecip) elRecip.textContent = s.recipient_name;
+    if (elDest) elDest.textContent = s.recipient_address || `PIN: ${s.recipient_pincode}`;
+    if (elWeight) elWeight.textContent = `${s.weight_kg} kg`;
+    if (elEta) elEta.textContent = s.estimated_delivery ? new Date(s.estimated_delivery).toLocaleString() : 'Within 24 Hours';
 
     // Update Progress Stepper
-    this.updateStepper(s.status);
+    this.updateStepper(s.status, 'stepper-progress', 'step-node-');
 
     // Render Checkpoint Timeline
     const cpContainer = document.getElementById('checkpoint-timeline-list');
@@ -116,7 +145,7 @@ const TrackingModule = {
           <div style="background: #e0f9f1; border: 1px solid #a7f3d0; border-radius: 6px; padding: 12px; display: flex; align-items: center; justify-content: space-between;">
             <div>
               <div style="font-weight: 700; color: #065f46;">Proof of Delivery Verified</div>
-              <div style="font-size: 0.76rem; color: #047857;">Signed upon delivery</div>
+              <div style="font-size: 0.76rem; color: #047857;">Signed upon physical handover</div>
             </div>
             <img src="${s.pod_signature_url}" alt="POD Signature" style="max-height: 40px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; padding: 2px;" />
           </div>
@@ -133,21 +162,116 @@ const TrackingModule = {
     }
 
     // Update GPS Route Map
-    this.renderTrackingMap(route, checkpoints, s.status);
+    this.renderTrackingMap('tracking-live-map', route, checkpoints, s.status, false);
   },
 
-  updateStepper(status) {
+  // =========================================================================
+  // PUBLIC LIVE TRACKING PORTAL (Zero Login Required)
+  // =========================================================================
+  async lookupPublic(trackingId) {
+    const pubContainer = document.getElementById('public-tracking-result-box');
+    const inputEl = document.getElementById('input-public-track-id');
+    if (inputEl) inputEl.value = trackingId;
+
+    const res = await CRMGMT.api(`/api/v1/tracking/${encodeURIComponent(trackingId)}`);
+    if (res.data && res.data.success && res.data.shipment) {
+      this.currentShipment = res.data.shipment;
+      this.renderPublicDetails(res.data);
+      if (pubContainer) pubContainer.style.display = 'block';
+    } else {
+      CRMGMT.toast(res.data?.error || 'Consignment AWB not found. Check the tracking number.', 'error');
+      if (pubContainer) pubContainer.style.display = 'none';
+    }
+  },
+
+  renderPublicDetails(data) {
+    const s = data.shipment;
+    const checkpoints = data.checkpoints || [];
+    const route = data.route || {};
+
+    const elId = document.getElementById('pub-disp-id');
+    const elStatus = document.getElementById('pub-disp-status');
+    const elSender = document.getElementById('pub-disp-sender');
+    const elRecip = document.getElementById('pub-disp-recip');
+    const elOrigin = document.getElementById('pub-disp-origin');
+    const elDest = document.getElementById('pub-disp-dest');
+    const elWeight = document.getElementById('pub-disp-weight');
+    const elEta = document.getElementById('pub-disp-eta');
+
+    if (elId) elId.textContent = s.tracking_id;
+    if (elStatus) elStatus.textContent = s.status.replace(/_/g, ' ');
+    if (elSender) elSender.textContent = s.sender_name;
+    if (elRecip) elRecip.textContent = s.recipient_name;
+    if (elOrigin) elOrigin.textContent = route.origin?.name || 'Saveetha Central Gateway';
+    if (elDest) elDest.textContent = `${s.recipient_address || 'Regional Delivery Wing'}, PIN: ${s.recipient_pincode}`;
+    if (elWeight) elWeight.textContent = `${s.weight_kg} kg (Billable: ${s.billable_weight_kg || s.weight_kg} kg)`;
+    if (elEta) elEta.textContent = s.estimated_delivery ? new Date(s.estimated_delivery).toLocaleString() : 'Within 24-48 Hours';
+
+    // Update Stepper
+    this.updateStepper(s.status, 'pub-stepper-progress', 'pub-step-node-');
+
+    // Render Public Checkpoints
+    const cpContainer = document.getElementById('pub-checkpoint-list');
+    if (cpContainer) {
+      cpContainer.innerHTML = '';
+      if (checkpoints.length === 0) {
+        cpContainer.innerHTML = '<div style="color: #94a3b8; padding: 12px;">Consignment booked. Physical barcode scan pending at sorting terminal.</div>';
+      } else {
+        checkpoints.slice().reverse().forEach((cp, idx) => {
+          const item = document.createElement('div');
+          item.className = 'timeline-checkpoint-item';
+          item.style.cssText = 'display: flex; gap: 14px; margin-bottom: 16px; position: relative;';
+          item.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div style="width: 12px; height: 12px; border-radius: 50%; background: ${idx === 0 ? '#3b7ddd' : '#94a3b8'}; border: 2px solid #fff; box-shadow: 0 0 0 2px ${idx === 0 ? '#3b7ddd' : '#cbd5e1'};"></div>
+              ${idx < checkpoints.length - 1 ? '<div style="width: 2px; flex: 1; background: #e2e8f0; margin-top: 4px;"></div>' : ''}
+            </div>
+            <div style="flex: 1;">
+              <div style="font-weight: 700; color: #1e293b; font-size: 0.88rem;">${cp.status.replace(/_/g, ' ')} - ${cp.location_tag}</div>
+              <div style="font-size: 0.78rem; color: #64748b; margin-top: 2px;">${cp.remarks || 'Checkpoint verified'}</div>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">${new Date(cp.timestamp).toLocaleString()}</div>
+            </div>
+          `;
+          cpContainer.appendChild(item);
+        });
+      }
+    }
+
+    // Public POD signature
+    const podBox = document.getElementById('pub-pod-container');
+    if (podBox) {
+      if (s.pod_signature_url) {
+        podBox.style.display = 'block';
+        podBox.innerHTML = `
+          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-weight: 700; color: #065f46;">Proof of Delivery Verified</div>
+              <div style="font-size: 0.78rem; color: #047857;">Signed digitally upon receipt</div>
+            </div>
+            <img src="${s.pod_signature_url}" alt="POD Signature" style="max-height: 48px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; padding: 4px;" />
+          </div>
+        `;
+      } else {
+        podBox.style.display = 'none';
+      }
+    }
+
+    // Public Map
+    this.renderTrackingMap('public-tracking-live-map', route, checkpoints, s.status, true);
+  },
+
+  updateStepper(status, progressId, nodePrefix) {
     const steps = ['ORDER_CREATED', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'];
     const statusIdx = steps.indexOf(status);
 
-    const progressBar = document.getElementById('stepper-progress');
+    const progressBar = document.getElementById(progressId);
     if (progressBar) {
       const pct = statusIdx >= 0 ? (statusIdx / (steps.length - 1)) * 100 : 0;
       progressBar.style.width = `${pct}%`;
     }
 
     steps.forEach((st, idx) => {
-      const node = document.getElementById(`step-node-${st}`);
+      const node = document.getElementById(`${nodePrefix}${st}`);
       if (!node) return;
       node.classList.remove('completed', 'active');
       if (idx < statusIdx) {
@@ -158,50 +282,46 @@ const TrackingModule = {
     });
   },
 
-  renderTrackingMap(route, checkpoints, status) {
-    const mapEl = document.getElementById('tracking-live-map');
+  renderTrackingMap(mapContainerId, route, checkpoints, status, isPublic = false) {
+    const mapEl = document.getElementById(mapContainerId);
     if (!mapEl || typeof L === 'undefined') return;
 
-    if (!this.trackingMap) {
-      this.trackingMap = L.map('tracking-live-map', { attributionControl: false }).setView([13.0827, 80.2707], 6);
+    let targetMap = isPublic ? this.publicTrackingMap : this.trackingMap;
+
+    if (!targetMap) {
+      targetMap = L.map(mapContainerId, { attributionControl: false }).setView([13.0827, 80.2707], 6);
 
       const googleStreets = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains: ['0', '1', '2', '3']
       });
+      googleStreets.addTo(targetMap);
 
-      const googleHybrid = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-        maxZoom: 20,
-        subdomains: ['0', '1', '2', '3']
-      });
-
-      googleStreets.addTo(this.trackingMap);
-
-      const baseMaps = {
-        "Google Roadmap": googleStreets,
-        "Google Satellite": googleHybrid
-      };
-      L.control.layers(baseMaps, null, { position: 'topright' }).addTo(this.trackingMap);
+      if (isPublic) this.publicTrackingMap = targetMap;
+      else this.trackingMap = targetMap;
     }
 
     // Clean previous layers
-    if (this.routePolyline) this.trackingMap.removeLayer(this.routePolyline);
-    if (this.truckMarker) this.trackingMap.removeLayer(this.truckMarker);
+    let lineLayer = isPublic ? this.publicRoutePolyline : this.routePolyline;
+    let markerLayer = isPublic ? this.publicTruckMarker : this.truckMarker;
+
+    if (lineLayer) targetMap.removeLayer(lineLayer);
+    if (markerLayer) targetMap.removeLayer(markerLayer);
 
     const origCoords = route.origin ? [route.origin.lat, route.origin.lng] : [13.0827, 80.2707];
     const destCoords = route.destination ? [route.destination.lat, route.destination.lng] : [12.9716, 77.5946];
 
     // Hub Markers
-    L.marker(origCoords).addTo(this.trackingMap).bindPopup(`<b>Origin:</b> ${route.origin?.name || 'Saveetha Hub'}`);
-    L.marker(destCoords).addTo(this.trackingMap).bindPopup(`<b>Destination:</b> ${route.destination?.name || 'Destination Hub'}`);
+    L.marker(origCoords).addTo(targetMap).bindPopup(`<b>Origin:</b> ${route.origin?.name || 'Saveetha Hub'}`);
+    L.marker(destCoords).addTo(targetMap).bindPopup(`<b>Destination:</b> ${route.destination?.name || 'Destination Hub'}`);
 
     // Route line
-    this.routePolyline = L.polyline([origCoords, destCoords], {
+    const polyline = L.polyline([origCoords, destCoords], {
       color: '#3b7ddd',
       weight: 3.5,
       dashArray: '8, 8',
-      opacity: 0.8
-    }).addTo(this.trackingMap);
+      opacity: 0.85
+    }).addTo(targetMap);
 
     // Calculate vehicle position
     let vehiclePos = origCoords;
@@ -218,14 +338,22 @@ const TrackingModule = {
       iconAnchor: [16, 16]
     });
 
-    this.truckMarker = L.marker(vehiclePos, { icon: truckIcon })
-      .addTo(this.trackingMap)
+    const truckMarker = L.marker(vehiclePos, { icon: truckIcon })
+      .addTo(targetMap)
       .bindPopup(`<b>Live Courier Position</b><br/>Status: ${status}`);
 
-    const bounds = L.latLngBounds([origCoords, destCoords, vehiclePos]);
-    this.trackingMap.fitBounds(bounds, { padding: [40, 40] });
+    if (isPublic) {
+      this.publicRoutePolyline = polyline;
+      this.publicTruckMarker = truckMarker;
+    } else {
+      this.routePolyline = polyline;
+      this.truckMarker = truckMarker;
+    }
 
-    setTimeout(() => this.trackingMap.invalidateSize(), 200);
+    const bounds = L.latLngBounds([origCoords, destCoords, vehiclePos]);
+    targetMap.fitBounds(bounds, { padding: [40, 40] });
+
+    setTimeout(() => targetMap.invalidateSize(), 250);
   },
 
   // POD Signature Pad

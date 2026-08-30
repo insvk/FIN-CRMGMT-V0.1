@@ -1009,3 +1009,152 @@
 .nav-avatar-btn {
   cursor: pointer;
 }
+
+/* 7. Standalone Public Live Tracking Portal & Resend Share Tools */
+.public-tracking-view {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-navbar {
+  height: 64px;
+  background: #1b263b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.public-tracking-container {
+  max-width: 1060px;
+  width: 100%;
+  margin: 28px auto 40px auto;
+  padding: 0 20px;
+  flex: 1;
+}
+
+.public-header-hero {
+  background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%);
+  border-radius: 12px;
+  padding: 28px;
+  color: #ffffff;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+}
+
+.share-btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.btn-share-whatsapp {
+  background-color: #25d366;
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: opacity 0.2s;
+}
+
+.btn-share-whatsapp:hover {
+  opacity: 0.9;
+}
+
+.btn-resend-email {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #334155;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: background-color 0.2s;
+}
+
+.btn-resend-email:hover {
+  background-color: #1e293b;
+}
+
+.public-stepper {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 24px 0;
+}
+
+.public-stepper::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 30px;
+  right: 30px;
+  height: 3px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.public-step-item {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.public-step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 8px;
+  transition: all 0.3s;
+}
+
+.public-step-item.active .public-step-dot {
+  border-color: #3b7ddd;
+  background: #3b7ddd;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 125, 221, 0.2);
+}
+
+.public-step-item.completed .public-step-dot {
+  border-color: #10b981;
+  background: #10b981;
+  color: #ffffff;
+}
+
+.public-step-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.public-step-item.active .public-step-label {
+  color: #1e293b;
+  font-weight: 700;
+}

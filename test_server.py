@@ -390,6 +390,20 @@ class RequestHandler(BaseHTTPRequestHandler):
             self._send_json({"success": True, "tracking_id": tid, "shipment_id": new_s["id"]})
             return
 
+        if path == '/api/v1/shipments/send-tracking-email':
+            target_email = payload.get('to') or payload.get('recipient_email')
+            tracking_id = payload.get('tracking_id')
+            tracking_url = payload.get('tracking_url') or f"https://fin-crmgmt-v0-1.onrender.com/#public_track?id={tracking_id}"
+            
+            self._send_json({
+                "success": True,
+                "message": f"Tracking notification for {tracking_id} dispatched via Resend to {target_email}",
+                "to": target_email,
+                "tracking_id": tracking_id,
+                "tracking_url": tracking_url
+            })
+            return
+
         if path == '/api/v1/checkpoints/scan':
             tid = payload.get('tracking_id')
             new_st = payload.get('status', 'IN_TRANSIT')

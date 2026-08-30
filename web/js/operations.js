@@ -78,16 +78,22 @@ const OperationsModule = {
         </td>
         <td style="padding: 12px 16px;">
           <div style="font-weight: 600; color: #1e293b;">${s.recipient_name}</div>
-          <div style="font-size: 0.76rem; color: #64748b;">${s.recipient_pincode}</div>
+          <div style="font-size: 0.76rem; color: #64748b;">${s.recipient_pincode} ${s.recipient_email ? `• ${s.recipient_email}` : ''}</div>
         </td>
         <td style="padding: 12px 16px;">
           <span class="badge ${statusBadge}">${s.status.replace(/_/g, ' ')}</span>
         </td>
         <td style="padding: 12px 16px; font-weight: 600;">${s.weight_kg} kg</td>
         <td style="padding: 12px 16px; font-weight: 700; color: #065f46;">₹${Number(s.shipping_cost).toFixed(2)}</td>
-        <td style="padding: 12px 16px;">
-          <button class="btn btn-outline btn-sm" onclick="CRMGMT.navigate('tracking', { trackingId: '${s.tracking_id}' })">
+        <td style="padding: 12px 16px; display: flex; gap: 6px;">
+          <button class="btn btn-primary btn-sm" onclick="CRMGMT.navigate('tracking', { trackingId: '${s.tracking_id}' })">
             Track
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="EmailService.openShareModal('${s.tracking_id}')" title="Share public tracking link">
+            🔗 Share
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="EmailService.openEmailModal('${s.tracking_id}', '${s.recipient_email || ''}')" title="Send email alert via Resend">
+            📧 Email
           </button>
         </td>
       `;
@@ -101,6 +107,7 @@ const OperationsModule = {
     const sender_address = document.getElementById('ship-sender-addr').value.trim();
     const recipient_name = document.getElementById('ship-recip-name').value.trim();
     const recipient_phone = document.getElementById('ship-recip-phone').value.trim();
+    const recipient_email = document.getElementById('ship-recip-email')?.value.trim() || CRMGMT.state.currentUser?.email || 'customer@saveetha.com';
     const recipient_address = document.getElementById('ship-recip-addr').value.trim();
     const recipient_pincode = document.getElementById('ship-recip-pin').value.trim();
     const weight_kg = parseFloat(document.getElementById('ship-weight').value) || 1.0;
@@ -109,7 +116,7 @@ const OperationsModule = {
 
     const payload = {
       sender_name, sender_phone, sender_address,
-      recipient_name, recipient_phone, recipient_address, recipient_pincode,
+      recipient_name, recipient_phone, recipient_email, recipient_address, recipient_pincode,
       weight_kg, dimensions_cm, is_fragile
     };
 
@@ -119,10 +126,25 @@ const OperationsModule = {
     });
 
     if (res.data && res.data.success) {
-      CRMGMT.toast(`Shipment created with Tracking ID: ${res.data.tracking_id}`, 'success');
+      const tid = res.data.tracking_id;
+      CRMGMT.toast(`Shipment created with Tracking ID: ${tid}`, 'success');
       this.closeModal('modal-new-shipment');
-      this.loadShipments();
-      CRMGMT.navigate('tracking', { trackingId: res.data.tracking_id });
+      
+      // Auto-dispatch tracking email via Resend Service
+      if (window.EmailService && recipient_email) {
+        window.EmailService.sendTrackingEmail(recipient_email, {
+          tracking_id: tid,
+          sender_name,
+          recipient_name,
+          recipient_pincode,
+          weight_kg,
+          shipping_cost: res.data.shipping_cost || 275.0,
+          status: 'ORDER_CREATED'
+        });
+      }
+
+      await this.loadShipments();
+      CRMGMT.navigate('tracking', { trackingId: tid });
     } else {
       CRMGMT.toast(res.data?.error || 'Failed to book shipment.', 'error');
     }
@@ -490,9 +512,15 @@ const OperationsModule = {
             <td style="padding: 12px 16px; font-weight: 700; color: #065f46;" data-inr-value="${s.shipping_cost}">
               ${CRMGMT.formatCurrency(s.shipping_cost)}
             </td>
-            <td style="padding: 12px 16px; display: flex; gap: 6px;">
+            <td style="padding: 12px 16px; display: flex; gap: 6px; flex-wrap: wrap;">
               <button class="btn btn-primary btn-sm" onclick="CRMGMT.navigate('tracking', { trackingId: '${s.tracking_id}' })">
                 📍 Track
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="EmailService.openShareModal('${s.tracking_id}')" title="Share public tracking link">
+                🔗 Share
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="EmailService.openEmailModal('${s.tracking_id}', '${s.recipient_email || ''}')" title="Send email alert via Resend">
+                📧 Email
               </button>
               <button class="btn btn-outline btn-sm" onclick="OperationsModule.printShippingLabel('${s.tracking_id}')">
                 🖨️ Label

@@ -155,25 +155,51 @@ const CRMGMT = {
 
   // View Routing
   navigate(viewName, params = {}) {
-    this.state.currentView = viewName;
+    let parsedView = viewName;
+    let effectiveParams = { ...params };
+    if (typeof viewName === 'string' && viewName.includes('?')) {
+      const parts = viewName.split('?');
+      parsedView = parts[0];
+      const searchParams = new URLSearchParams(parts[1]);
+      if (searchParams.get('id')) effectiveParams.trackingId = searchParams.get('id');
+      if (searchParams.get('track')) effectiveParams.trackingId = searchParams.get('track');
+    }
+
+    this.state.currentView = parsedView;
     const authView = document.getElementById('view-auth');
     const mainApp = document.getElementById('view-main-app');
+    const publicTrackView = document.getElementById('view-public-tracking');
 
     // Deactivate all subviews
     document.querySelectorAll('.view-section, .dashboard-subview').forEach(el => {
       el.classList.remove('active');
     });
 
-    // Update URL hash without reload
-    if (window.location.hash !== `#${viewName}`) {
-      window.location.hash = `#${viewName}`;
+    // Public Live Tracking Portal (No Login Required)
+    if (parsedView === 'public_track' || parsedView === 'track') {
+      if (authView) authView.style.display = 'none';
+      if (mainApp) mainApp.style.display = 'none';
+      if (publicTrackView) publicTrackView.style.display = 'block';
+
+      const targetId = effectiveParams.trackingId || 'CR-68D3F12A-B4-9F81';
+      if (window.TrackingModule) {
+        window.TrackingModule.lookupPublic(targetId);
+      }
+      return;
     }
 
-    if (viewName === 'login' || viewName === 'register') {
+    if (publicTrackView) publicTrackView.style.display = 'none';
+
+    // Update URL hash without reload
+    if (window.location.hash !== `#${parsedView}`) {
+      window.location.hash = `#${parsedView}`;
+    }
+
+    if (parsedView === 'login' || parsedView === 'register') {
       if (authView) authView.style.display = 'flex';
       if (mainApp) mainApp.style.display = 'none';
 
-      if (viewName === 'register' && window.switchAuthMode) {
+      if (parsedView === 'register' && window.switchAuthMode) {
         window.switchAuthMode('register');
       } else if (window.switchAuthMode) {
         window.switchAuthMode('login');
@@ -184,8 +210,8 @@ const CRMGMT = {
 
       // Auto-route customer to customer_dashboard if generic dashboard is requested
       const isCustomer = this.state.currentUser && (this.state.currentUser.role === 'standard_customer' || this.state.currentUser.role === 'enterprise_customer');
-      let effectiveView = viewName;
-      if (viewName === 'dashboard' && isCustomer) {
+      let effectiveView = parsedView;
+      if (parsedView === 'dashboard' && isCustomer) {
         effectiveView = 'customer_dashboard';
       }
 
@@ -218,8 +244,8 @@ const CRMGMT = {
       } else if (effectiveView === 'customer_dashboard' && window.OperationsModule) {
         window.OperationsModule.loadCustomerOverview();
       } else if (effectiveView === 'tracking' && window.TrackingModule) {
-        if (params.trackingId) {
-          window.TrackingModule.lookup(params.trackingId);
+        if (effectiveParams.trackingId) {
+          window.TrackingModule.lookup(effectiveParams.trackingId);
         }
       } else if (effectiveView === 'shipments' && window.OperationsModule) {
         window.OperationsModule.loadShipments();
@@ -312,23 +338,33 @@ const CRMGMT = {
   init() {
     this.renderNotifications();
 
-    // Check saved session
-    const savedToken = localStorage.getItem('crmgmt_token');
-    const savedUser = localStorage.getItem('crmgmt_user');
+    // Check if initial URL specifies public tracking
+    const initialHash = window.location.hash.replace('#', '');
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryTrack = urlParams.get('track') || urlParams.get('id');
 
-    if (savedToken && savedUser) {
-      try {
-        this.state.token = savedToken;
-        this.state.currentUser = JSON.parse(savedUser);
-        this.updateUserUI();
-        const isCustomer = this.state.currentUser.role === 'standard_customer' || this.state.currentUser.role === 'enterprise_customer';
-        this.navigate(isCustomer ? 'customer_dashboard' : 'dashboard');
-      } catch (e) {
-        localStorage.clear();
+    if (initialHash.startsWith('public_track') || initialHash.startsWith('track') || queryTrack) {
+      const tid = queryTrack || initialHash.split('?id=')[1] || initialHash.split('?track=')[1] || 'CR-68D3F12A-B4-9F81';
+      this.navigate('public_track', { trackingId: tid });
+    } else {
+      // Check saved session
+      const savedToken = localStorage.getItem('crmgmt_token');
+      const savedUser = localStorage.getItem('crmgmt_user');
+
+      if (savedToken && savedUser) {
+        try {
+          this.state.token = savedToken;
+          this.state.currentUser = JSON.parse(savedUser);
+          this.updateUserUI();
+          const isCustomer = this.state.currentUser.role === 'standard_customer' || this.state.currentUser.role === 'enterprise_customer';
+          this.navigate(isCustomer ? 'customer_dashboard' : 'dashboard');
+        } catch (e) {
+          localStorage.clear();
+          this.navigate('login');
+        }
+      } else {
         this.navigate('login');
       }
-    } else {
-      this.navigate('login');
     }
 
     // Handle hash route changes

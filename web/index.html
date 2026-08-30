@@ -865,7 +865,7 @@
             <!-- Meta Header Card -->
             <div class="card" style="margin-bottom: 24px;">
               <div
-                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                 <div>
                   <span
                     style="font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Tracking
@@ -873,7 +873,13 @@
                   <div id="track-disp-id"
                     style="font-size: 1.3rem; font-weight: 800; font-family: var(--font-mono); color: #3b7ddd;"></div>
                 </div>
-                <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <button class="btn btn-outline btn-sm" onclick="EmailService.openShareModal(TrackingModule.currentShipment?.tracking_id)" title="Share live public tracking link">
+                    🔗 Share Live Link
+                  </button>
+                  <button class="btn btn-outline btn-sm" onclick="EmailService.openEmailModal(TrackingModule.currentShipment?.tracking_id, TrackingModule.currentShipment?.recipient_email)" title="Send tracking email via Resend">
+                    📧 Send Resend Email
+                  </button>
                   <span class="badge badge-success" id="track-disp-status">OUT FOR DELIVERY</span>
                 </div>
               </div>
@@ -1262,6 +1268,12 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="form-label">Recipient / Customer Email Address for Tracking Updates<span class="req">*</span></label>
+          <input type="email" id="ship-recip-email" class="form-input" placeholder="customer@saveetha.com or recipient@gmail.com" required />
+          <div style="font-size: 0.74rem; color: #64748b; margin-top: 4px;">An automated Resend email with complete consignment details and a live public tracking link will be dispatched immediately.</div>
+        </div>
+
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
           <div class="form-group">
             <label class="form-label">Recipient Address<span class="req">*</span></label>
@@ -1503,10 +1515,246 @@
     </div>
   </div>
 
+  <!-- =========================================================================
+       MODAL 7: SHARE PUBLIC LIVE TRACKING LINK
+       ========================================================================= -->
+  <div id="modal-share-tracking" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 520px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e293b;">Share Live Tracking Link</h3>
+        <button class="nav-icon-btn" onclick="OperationsModule.closeModal('modal-share-tracking')">✕</button>
+      </div>
+
+      <p style="font-size: 0.84rem; color: #64748b; margin-bottom: 16px;">
+        Anyone with this public link can view live GPS coordinates, status checkpoints, and delivery verification without logging in:
+      </p>
+
+      <div class="form-group">
+        <label class="form-label">Consignment Public Tracking URL (<span id="share-modal-tid" style="font-family: monospace; color: #3b7ddd;">CR-XXXXX</span>)</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="share-modal-url" class="form-input" readonly style="background: #f8fafc; font-family: monospace; font-size: 0.8rem;" />
+          <button class="btn btn-primary btn-sm" onclick="EmailService.copyShareUrl()">📋 Copy</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 18px;">
+        <button class="btn-share-whatsapp" style="justify-content: center; width: 100%; padding: 12px;" onclick="EmailService.shareOnWhatsApp()">
+          💬 Share Consignment on WhatsApp
+        </button>
+        <button class="btn-resend-email" style="justify-content: center; width: 100%; padding: 12px;" onclick="OperationsModule.closeModal('modal-share-tracking'); EmailService.openEmailModal()">
+          📧 Send via Resend Email
+        </button>
+        <button class="btn btn-outline" style="width: 100%;" onclick="window.open(document.getElementById('share-modal-url').value, '_blank')">
+          🌐 Open Public Live Tracking View →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 8: SEND LIVE TRACKING EMAIL VIA RESEND API
+       ========================================================================= -->
+  <div id="modal-send-email" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 540px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e293b;">Resend Email Tracking Dispatch</h3>
+        </div>
+        <button class="nav-icon-btn" onclick="OperationsModule.closeModal('modal-send-email')">✕</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); EmailService.submitEmailModal();">
+        <div class="form-group">
+          <label class="form-label">Consignment AWB</label>
+          <input type="text" id="email-modal-tid" class="form-input" readonly style="background: #f8fafc; font-family: monospace; font-weight: 700; color: #3b7ddd;" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Recipient / Customer Email Address<span class="req">*</span></label>
+          <input type="email" id="email-modal-address" class="form-input" placeholder="customer@saveetha.com or recipient@gmail.com" required />
+          <div style="font-size: 0.74rem; color: #64748b; margin-top: 4px;">
+            A responsive HTML email with full consignment stats, waypoint history, and a direct 1-click GPS tracking button will be dispatched.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Resend API Key (Optional / Overwrite)</label>
+          <input type="password" id="email-modal-resend-key" class="form-input" placeholder="re_123456789... (Leave blank to use default)" />
+          <div style="font-size: 0.74rem; color: #64748b; margin-top: 4px;">Configures your custom Resend API key for direct cloud delivery.</div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+          <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-send-email')">Cancel</button>
+          <button type="submit" class="btn btn-primary">🚀 Send Tracking Email via Resend</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       VIEW 3: STANDALONE PUBLIC LIVE TRACKING PORTAL (Zero Login Required)
+       ========================================================================= -->
+  <div id="view-public-tracking" class="public-tracking-view app-view" style="display: none;">
+    <!-- Public Navbar -->
+    <header class="public-navbar">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img src="https://images.squarespace-cdn.com/content/v1/6268bb18d74de925d9ff1bb9/afb1eaa4-6ab6-4d8a-b4f7-6ccd0a0776d9/Saveetha+simats.png" alt="Saveetha SIMATS" style="height: 36px; filter: brightness(0) invert(1);" />
+        <div>
+          <div style="font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">SAVEETHA EXPRESS LOGISTICS</div>
+          <div style="font-size: 0.72rem; color: #94a3b8;">PUBLIC CONSIGNMENT TELEMETRY PORTAL</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="btn btn-outline btn-sm" style="color: #ffffff; border-color: #475569;" onclick="CRMGMT.navigate('login')">
+          🔐 Staff &amp; Enterprise Sign In
+        </button>
+      </div>
+    </header>
+
+    <main class="public-tracking-container">
+      <!-- Search Box -->
+      <div class="card" style="margin-bottom: 24px; padding: 20px;">
+        <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b; margin-bottom: 10px;">Track Another Consignment Air Waybill (AWB):</div>
+        <div style="display: flex; gap: 12px;">
+          <input type="text" id="input-public-track-id" class="form-input" placeholder="Enter Tracking ID (e.g. CR-68D3F12A-B4-9F81)" />
+          <button id="btn-public-track-lookup" class="btn btn-primary" style="min-width: 130px;">Track Live</button>
+        </div>
+      </div>
+
+      <!-- Public Tracking Results Box -->
+      <div id="public-tracking-result-box" style="display: none;">
+        
+        <!-- Hero Banner -->
+        <div class="public-header-hero">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px;">Consignment Air Waybill (AWB)</div>
+              <div id="pub-disp-id" style="font-size: 1.8rem; font-weight: 900; font-family: var(--font-mono); color: #38bdf8; margin: 4px 0 8px 0;">CR-XXXXX</div>
+              <div style="font-size: 0.86rem; color: #cbd5e1;">
+                Cryptographic Checksum Verified • Priority Air Cargo
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span id="pub-disp-status" class="badge badge-success" style="font-size: 0.95rem; padding: 6px 14px;">IN TRANSIT</span>
+              <div id="pub-disp-eta" style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">ETA: Within 24 Hours</div>
+            </div>
+          </div>
+
+          <!-- Share & Print Action Bar -->
+          <div class="share-btn-group">
+            <button class="btn-share-whatsapp" onclick="EmailService.shareOnWhatsApp(TrackingModule.currentShipment?.tracking_id)">
+              💬 Share on WhatsApp
+            </button>
+            <button class="btn-resend-email" onclick="EmailService.openEmailModal(TrackingModule.currentShipment?.tracking_id, TrackingModule.currentShipment?.recipient_email)">
+              📧 Send Email via Resend
+            </button>
+            <button class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.3);" onclick="EmailService.openShareModal(TrackingModule.currentShipment?.tracking_id)">
+              🔗 Copy Share Link
+            </button>
+            <button class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.3);" onclick="OperationsModule.printShippingLabel(TrackingModule.currentShipment?.tracking_id)">
+              🖨️ Print Shipping Label
+            </button>
+          </div>
+        </div>
+
+        <!-- 5-Step Stepper -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="tracking-stepper">
+            <div id="pub-stepper-progress" class="stepper-progress-bar" style="width: 50%;"></div>
+            <div id="pub-step-node-ORDER_CREATED" class="step-node completed">
+              <div class="step-icon">1</div>
+              <div class="step-label">Order Booked</div>
+            </div>
+            <div id="pub-step-node-PICKED_UP" class="step-node completed">
+              <div class="step-icon">2</div>
+              <div class="step-label">Hub Ingested</div>
+            </div>
+            <div id="pub-step-node-IN_TRANSIT" class="step-node active">
+              <div class="step-icon">3</div>
+              <div class="step-label">In Transit</div>
+            </div>
+            <div id="pub-step-node-OUT_FOR_DELIVERY" class="step-node">
+              <div class="step-icon">4</div>
+              <div class="step-label">Out for Delivery</div>
+            </div>
+            <div id="pub-step-node-DELIVERED" class="step-node">
+              <div class="step-icon">5</div>
+              <div class="step-label">Delivered</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Split: Telemetry Stats & Live GPS Map -->
+        <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 24px; margin-bottom: 24px;">
+          
+          <!-- Key Details Card -->
+          <div class="card">
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; color: #1e293b;">Consignment Specification</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.85rem;">
+              <div style="padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                <div style="color: #94a3b8; font-size: 0.74rem; font-weight: 700; text-transform: uppercase;">Origin Hub</div>
+                <div id="pub-disp-origin" style="font-weight: 700; color: #1e293b; margin-top: 2px;">Saveetha Chennai Central Gateway</div>
+              </div>
+
+              <div style="padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                <div style="color: #94a3b8; font-size: 0.74rem; font-weight: 700; text-transform: uppercase;">Destination Delivery Address</div>
+                <div id="pub-disp-dest" style="font-weight: 700; color: #1e293b; margin-top: 2px;">-</div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                <div>
+                  <div style="color: #94a3b8; font-size: 0.74rem; font-weight: 700; text-transform: uppercase;">Sender</div>
+                  <div id="pub-disp-sender" style="font-weight: 600; color: #1e293b;">-</div>
+                </div>
+                <div>
+                  <div style="color: #94a3b8; font-size: 0.74rem; font-weight: 700; text-transform: uppercase;">Recipient</div>
+                  <div id="pub-disp-recip" style="font-weight: 600; color: #1e293b;">-</div>
+                </div>
+              </div>
+
+              <div style="padding-bottom: 6px;">
+                <div style="color: #94a3b8; font-size: 0.74rem; font-weight: 700; text-transform: uppercase;">Billable Scaled Weight</div>
+                <div id="pub-disp-weight" style="font-weight: 700; color: #0284c7; margin-top: 2px;">-</div>
+              </div>
+            </div>
+
+            <!-- Proof of Delivery Box -->
+            <div id="pub-pod-container" style="margin-top: 18px; display: none;"></div>
+          </div>
+
+          <!-- GPS Route Map Card -->
+          <div class="card" style="padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">Live Interstate Transit Telemetry</h3>
+              <span class="badge badge-primary">GPS LIVE</span>
+            </div>
+            <div id="public-tracking-live-map" style="width: 100%; height: 350px; border-radius: 8px; overflow: hidden;"></div>
+          </div>
+
+        </div>
+
+        <!-- Checkpoints Timeline Card -->
+        <div class="card">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; color: #1e293b;">Official Checkpoint Audit Log</h3>
+          <div id="pub-checkpoint-list"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Public Footer -->
+    <footer style="background: #1b263b; color: #94a3b8; text-align: center; padding: 24px 20px; font-size: 0.78rem;">
+      <div>Saveetha Institute of Medical and Technical Sciences (SIMATS) • Central Logistics Gateway</div>
+      <div style="margin-top: 4px; color: #64748b;">SHA-256 Cryptographic Checksum Engine &amp; Live GPS Corridors</div>
+    </footer>
+  </div>
+
   <!-- Core JavaScript Controllers -->
   <script src="js/app.js"></script>
   <script src="js/login.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/email_service.js"></script>
   <script src="js/tracking.js"></script>
   <script src="js/operations.js"></script>
 </body>
