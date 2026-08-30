@@ -21,17 +21,7 @@
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
 
-  <!-- Floating Quick Role Switcher for Instant Evaluation -->
-  <div class="role-switcher-badge">
-    <span>Demo Role:</span>
-    <select id="quick-role-select" onchange="CRMGMT.switchRole(this.value)">
-      <option value="super_admin">Super Admin (SIMATS Chief Administrator)</option>
-      <option value="hub_manager">Hub Manager (Saveetha Central Operations)</option>
-      <option value="delivery_agent">Delivery Agent (SIMATS Dispatch Unit 01)</option>
-      <option value="enterprise_customer">Enterprise (Saveetha Biomedical Procurement)</option>
-      <option value="standard_customer">Standard Customer (Verified Consignee)</option>
-    </select>
-  </div>
+
 
   <!-- =========================================================================
        VIEW 1: SAVEETHA AUTHENTICATION & LOGIN (Faithful to Reference Image 2)
@@ -101,19 +91,7 @@
             Don't have an account ? <a href="javascript:void(0)" onclick="window.switchAuthMode('register')">Register here</a>
           </div>
 
-          <!-- Quick Fill Demo Bar -->
-          <div class="demo-accounts-bar">
-            <div class="demo-title">
-              <span>⚡ Quick-Fill Demo Roles:</span>
-            </div>
-            <div class="demo-btn-group">
-              <button class="demo-pill-btn" onclick="window.fillDemoAccount('admin')">Chief Admin</button>
-              <button class="demo-pill-btn" onclick="window.fillDemoAccount('hub')">Hub Manager</button>
-              <button class="demo-pill-btn" onclick="window.fillDemoAccount('agent')">Fleet Agent</button>
-              <button class="demo-pill-btn" onclick="window.fillDemoAccount('enterprise')">Saveetha Biomed</button>
-              <button class="demo-pill-btn" onclick="window.fillDemoAccount('customer')">Consignee</button>
-            </div>
-          </div>
+
         </div>
 
         <!-- Section: Register Form -->

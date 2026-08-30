@@ -99,8 +99,7 @@ const AuthModule = {
     const googleBtn = document.getElementById('btn-google-login');
     if (googleBtn) {
       googleBtn.addEventListener('click', () => {
-        this.fillDemo('enterprise');
-        CRMGMT.toast('Simulated Google Workspace Single Sign-On (Saveetha Enterprise Domain)', 'info');
+        CRMGMT.toast('Google Workspace Single Sign-On (Saveetha Enterprise Domain) initialized.', 'info');
       });
     }
   },
@@ -118,41 +117,10 @@ const AuthModule = {
       if (loginSection) loginSection.style.display = 'block';
       if (regSection) regSection.style.display = 'none';
     }
-  },
-
-  // Pre-fill demo accounts for 1-click evaluation
-  fillDemo(role) {
-    this.switchMode('login');
-    const emailInput = document.getElementById('login-email');
-    const pwInput = document.getElementById('login-password');
-    if (!emailInput || !pwInput) return;
-
-    if (role === 'admin') {
-      emailInput.value = 'admin@crmgmt.io';
-      pwInput.value = 'Admin@123';
-      CRMGMT.toast('Filled: SIMATS Chief Systems Administrator', 'info');
-    } else if (role === 'hub') {
-      emailInput.value = 'hub.chennai@crmgmt.io';
-      pwInput.value = 'Admin@123';
-      CRMGMT.toast('Filled: Saveetha Central Hub Operations Manager', 'info');
-    } else if (role === 'agent') {
-      emailInput.value = 'agent.che01@crmgmt.io';
-      pwInput.value = 'Admin@123';
-      CRMGMT.toast('Filled: SIMATS Dispatch & Fleet Unit 01', 'info');
-    } else if (role === 'enterprise') {
-      emailInput.value = 'enterprise@saveetha.com';
-      pwInput.value = 'Admin@123';
-      CRMGMT.toast('Filled: Saveetha Biomedical & Healthcare Procurement', 'info');
-    } else {
-      emailInput.value = 'customer@gmail.com';
-      pwInput.value = 'User@123';
-      CRMGMT.toast('Filled: Verified Retail Consignee', 'info');
-    }
   }
 };
 
 window.switchAuthMode = (mode) => AuthModule.switchMode(mode);
-window.fillDemoAccount = (role) => AuthModule.fillDemo(role);
 
 window.addEventListener('DOMContentLoaded', () => {
   AuthModule.init();

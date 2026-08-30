@@ -215,32 +215,4 @@ a:hover {
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* Floating Role Switcher */
-.role-switcher-badge {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 9000;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: 30px;
-  padding: 6px 14px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
-  font-weight: 600;
-}
 
-.role-switcher-badge select {
-  border: none;
-  background: #f1f5f9;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--primary);
-  cursor: pointer;
-  outline: none;
-}

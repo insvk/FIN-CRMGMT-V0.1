@@ -258,47 +258,7 @@
   cursor: pointer;
 }
 
-/* Quick Fill Demo Roles Bar */
-.demo-accounts-bar {
-  margin-top: 24px;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 8px;
-  font-size: 0.76rem;
-}
 
-.demo-accounts-bar .demo-title {
-  font-weight: 700;
-  color: #475569;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.demo-btn-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.demo-pill-btn {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--primary);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.demo-pill-btn:hover {
-  background: var(--primary-light);
-  border-color: var(--primary);
-}
 
 /* Right Illustration Pane (50%) */
 .auth-right-pane {
