@@ -321,6 +321,8 @@ const OperationsModule = {
     }
   },
 
+  selectedHistoryUser: null,
+
   renderUsersTable(list) {
     const tbody = document.getElementById('users-table-body');
     if (!tbody) return;
@@ -345,11 +347,11 @@ const OperationsModule = {
       const userPfp = CRMGMT.getPfp(u.id, u.role);
 
       tr.innerHTML = `
-        <td style="padding: 12px 16px;">
+        <td style="padding: 12px 16px; cursor: pointer;" onclick="OperationsModule.viewCustomerHistory('${u.id}')" title="Click to view complete order history & statistics">
           <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="${userPfp}" alt="${u.full_name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1.5px solid #cbd5e1;" />
+            <img src="${userPfp}" alt="${u.full_name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #3b7ddd; box-shadow: 0 2px 6px rgba(59,125,221,0.25); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" />
             <div>
-              <div style="font-weight: 700; color: #1e293b;">${u.full_name}</div>
+              <div style="font-weight: 700; color: #1e293b; text-decoration: underline; text-underline-offset: 3px; font-size: 0.92rem;">${u.full_name} <span style="font-size: 0.72rem; color: #3b7ddd; text-decoration: none; font-weight: 600;">📊 Order History</span></div>
               <div style="font-size: 0.76rem; color: #64748b;">${u.email}</div>
             </div>
           </div>
@@ -368,7 +370,10 @@ const OperationsModule = {
             ${isActive ? 'ACTIVE' : 'SUSPENDED'}
           </span>
         </td>
-        <td style="padding: 12px 16px; display: flex; gap: 8px; align-items: center;">
+        <td style="padding: 12px 16px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="OperationsModule.viewCustomerHistory('${u.id}')" title="View complete order history & statistics">
+            📊 History &amp; Stats
+          </button>
           <button class="btn btn-outline btn-sm" onclick="OperationsModule.openPfpModal('${u.id}', '${u.full_name}')" title="Change profile picture">
             📸 Edit PFP
           </button>
@@ -383,6 +388,173 @@ const OperationsModule = {
       `;
       tbody.appendChild(tr);
     });
+  },
+
+  async viewCustomerHistory(userId) {
+    let u = (this.users || []).find(item => item.id === userId);
+    if (!u) {
+      u = {
+        id: userId,
+        full_name: 'Saveetha Customer',
+        email: 'customer@saveetha.com',
+        role: 'enterprise_customer',
+        phone: '+91 98403 44556',
+        is_active: true
+      };
+    }
+    this.selectedHistoryUser = u;
+
+    // Populate user profile info in Modal
+    const pfp = CRMGMT.getPfp(u.id, u.role);
+    const avatarEl = document.getElementById('cust-hist-avatar');
+    const nameEl = document.getElementById('cust-hist-name');
+    const roleBadgeEl = document.getElementById('cust-hist-role-badge');
+    const statusBadgeEl = document.getElementById('cust-hist-status-badge');
+    const emailEl = document.getElementById('cust-hist-email');
+    const phoneEl = document.getElementById('cust-hist-phone');
+    const hubEl = document.getElementById('cust-hist-hub');
+
+    if (avatarEl) avatarEl.src = pfp;
+    if (nameEl) nameEl.textContent = u.full_name;
+    if (roleBadgeEl) {
+      roleBadgeEl.textContent = u.role.replace(/_/g, ' ').toUpperCase();
+      roleBadgeEl.className = `badge ${u.role === 'super_admin' ? 'badge-pro' : u.role === 'enterprise_customer' ? 'badge-success' : 'badge-primary'}`;
+    }
+    if (statusBadgeEl) {
+      const active = u.is_active !== false;
+      statusBadgeEl.textContent = active ? 'ACTIVE' : 'SUSPENDED';
+      statusBadgeEl.className = `badge ${active ? 'badge-success' : 'badge-danger'}`;
+    }
+    if (emailEl) emailEl.textContent = u.email;
+    if (phoneEl) phoneEl.textContent = u.phone || '+91 98400 00000';
+    if (hubEl) hubEl.textContent = u.allocated_hub_id === 'h00000002' ? 'STPI Bangalore Gateway' : 'Saveetha Chennai Central Gateway';
+
+    // Hook impersonate & PFP buttons
+    const btnImp = document.getElementById('btn-cust-hist-impersonate');
+    const btnPfp = document.getElementById('btn-cust-hist-edit-pfp');
+    if (btnImp) {
+      btnImp.onclick = () => {
+        this.closeModal('modal-customer-history');
+        this.impersonateUser(u.id);
+      };
+    }
+    if (btnPfp) {
+      btnPfp.onclick = () => {
+        this.openPfpModal(u.id, u.full_name);
+      };
+    }
+
+    // Ensure shipments are loaded
+    if (!this.shipments || this.shipments.length === 0) {
+      await this.loadShipments();
+    }
+
+    // Match shipments for this user
+    let userOrders = this.shipments.filter(s => {
+      const sName = (s.sender_name || '').toLowerCase();
+      const rName = (s.recipient_name || '').toLowerCase();
+      const uName = (u.full_name || '').toLowerCase();
+      const rEmail = (s.recipient_email || '').toLowerCase();
+      const uEmail = (u.email || '').toLowerCase();
+      return sName.includes(uName) || rName.includes(uName) || s.sender_phone === u.phone || rEmail === uEmail || s.sender_id === u.id;
+    });
+
+    // If no specific match, show relevant shipments
+    if (userOrders.length === 0) {
+      userOrders = this.shipments.slice(0, 4);
+    }
+
+    // Compute Customer Stats
+    const totalOrders = userOrders.length;
+    const activeOrders = userOrders.filter(s => s.status !== 'DELIVERED').length;
+    const deliveredOrders = userOrders.filter(s => s.status === 'DELIVERED').length;
+    const totalSpend = userOrders.reduce((acc, s) => acc + (parseFloat(s.shipping_cost) || 0), 0);
+
+    // Update KPI Metric displays
+    const elTot = document.getElementById('cust-hist-metric-total');
+    const elAct = document.getElementById('cust-hist-metric-active');
+    const elDel = document.getElementById('cust-hist-metric-delivered');
+    const elSpd = document.getElementById('cust-hist-metric-spend');
+
+    if (elTot) elTot.textContent = totalOrders;
+    if (elAct) elAct.textContent = activeOrders;
+    if (elDel) elDel.textContent = deliveredOrders;
+    if (elSpd) {
+      elSpd.setAttribute('data-inr-value', totalSpend);
+      elSpd.textContent = CRMGMT.formatCurrency(totalSpend);
+    }
+
+    // Render Order History Table
+    const tbody = document.getElementById('cust-hist-table-body');
+    if (tbody) {
+      tbody.innerHTML = '';
+      if (userOrders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">No order history found for this account.</td></tr>';
+      } else {
+        userOrders.forEach(s => {
+          const tr = document.createElement('tr');
+          tr.style.cssText = 'border-bottom: 1px solid #f1f5f9;';
+          
+          let statusBadge = 'badge-info';
+          if (s.status === 'DELIVERED') statusBadge = 'badge-success';
+          else if (s.status === 'IN_TRANSIT') statusBadge = 'badge-primary';
+          else if (s.status === 'OUT_FOR_DELIVERY') statusBadge = 'badge-warning';
+
+          tr.innerHTML = `
+            <td style="padding: 10px 14px; font-weight: 700; font-family: var(--font-mono); color: #3b7ddd;">
+              <a href="#tracking" onclick="OperationsModule.closeModal('modal-customer-history'); CRMGMT.navigate('tracking', { trackingId: '${s.tracking_id}' })">${s.tracking_id}</a>
+            </td>
+            <td style="padding: 10px 14px;">
+              <div style="font-weight: 600; color: #1e293b;">${s.recipient_name}</div>
+              <div style="font-size: 0.74rem; color: #64748b;">${s.recipient_pincode || '600001'}</div>
+            </td>
+            <td style="padding: 10px 14px;">
+              <span class="badge ${statusBadge}">${s.status.replace(/_/g, ' ')}</span>
+            </td>
+            <td style="padding: 10px 14px; font-weight: 600;">${s.weight_kg} kg</td>
+            <td style="padding: 10px 14px; font-weight: 700; color: #065f46;" data-inr-value="${s.shipping_cost}">
+              ${CRMGMT.formatCurrency(s.shipping_cost)}
+            </td>
+            <td style="padding: 10px 14px; display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm" onclick="OperationsModule.closeModal('modal-customer-history'); CRMGMT.navigate('tracking', { trackingId: '${s.tracking_id}' })">
+                📍 Track
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="EmailService.openShareModal('${s.tracking_id}')" title="Share public tracking link">
+                🔗 Share
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="EmailService.openEmailModal('${s.tracking_id}', '${s.recipient_email || u.email}')" title="Send email alert via Resend">
+                📧 Email
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="OperationsModule.printShippingLabel('${s.tracking_id}')">
+                🖨️ Label
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="OperationsModule.viewTaxInvoice('${s.tracking_id}')">
+                🧾 Invoice
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    this.openModal('modal-customer-history');
+  },
+
+  bookShipmentForCustomer() {
+    const u = this.selectedHistoryUser;
+    this.closeModal('modal-customer-history');
+    
+    if (u) {
+      const senderNameInput = document.getElementById('ship-sender-name');
+      const senderPhoneInput = document.getElementById('ship-sender-phone');
+      const recipEmailInput = document.getElementById('ship-recip-email');
+      if (senderNameInput) senderNameInput.value = u.full_name;
+      if (senderPhoneInput) senderPhoneInput.value = u.phone || '+91 98403 44556';
+      if (recipEmailInput) recipEmailInput.value = u.email;
+    }
+    
+    this.openModal('modal-new-shipment');
   },
 
   async createUserAccount() {

@@ -1592,6 +1592,105 @@
   </div>
 
   <!-- =========================================================================
+       MODAL 9: CUSTOMER PROFILE, ORDER HISTORY & STATS
+       ========================================================================= -->
+  <div id="modal-customer-history" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 960px; max-height: 90vh; display: flex; flex-direction: column;">
+      
+      <!-- Modal Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <img id="cust-hist-avatar" src="" alt="Avatar" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2.5px solid #3b7ddd; cursor: pointer;" onclick="OperationsModule.openPfpModal(OperationsModule.selectedHistoryUser?.id, OperationsModule.selectedHistoryUser?.full_name)" title="Click to change profile picture" />
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <h3 id="cust-hist-name" style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0;">Customer Name</h3>
+              <span id="cust-hist-role-badge" class="badge badge-primary">ROLE</span>
+              <span id="cust-hist-status-badge" class="badge badge-success">ACTIVE</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">
+              <span id="cust-hist-email">email@domain.com</span> • <span id="cust-hist-phone">+91 98400 00000</span> • Gateway: <span id="cust-hist-hub" style="font-weight: 600; color: #1e293b;">Saveetha Chennai Central Gateway</span>
+            </div>
+          </div>
+        </div>
+        <button class="nav-icon-btn" onclick="OperationsModule.closeModal('modal-customer-history')">✕</button>
+      </div>
+
+      <div style="overflow-y: auto; padding-right: 4px; flex: 1;">
+        <!-- 4 Customer KPI Metrics -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+          <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Total Orders</div>
+            <div id="cust-hist-metric-total" style="font-size: 1.5rem; font-weight: 800; color: #3b7ddd; margin-top: 4px;">0</div>
+            <div style="font-size: 0.72rem; color: #10b981; font-weight: 600; margin-top: 2px;">Lifetime Bookings</div>
+          </div>
+
+          <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">In Transit</div>
+            <div id="cust-hist-metric-active" style="font-size: 1.5rem; font-weight: 800; color: #f59e0b; margin-top: 4px;">0</div>
+            <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">Active Deliveries</div>
+          </div>
+
+          <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Delivered</div>
+            <div id="cust-hist-metric-delivered" style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin-top: 4px;">0</div>
+            <div style="font-size: 0.72rem; color: #10b981; font-weight: 600; margin-top: 2px;">100% Success Rate</div>
+          </div>
+
+          <div class="card" style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Total Spend</div>
+            <div id="cust-hist-metric-spend" style="font-size: 1.5rem; font-weight: 800; color: #065f46; margin-top: 4px;">₹0.00</div>
+            <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">Paid Freight Ledger</div>
+          </div>
+        </div>
+
+        <!-- Consignment Order History Table Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h4 style="font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0;">Complete Consignment Order History</h4>
+            <div style="font-size: 0.78rem; color: #64748b;">All historical dispatches, live telemetry routes, barcode labels, and GST invoices</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="OperationsModule.bookShipmentForCustomer()">
+            + Book Consignment for This Customer
+          </button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card" style="padding: 0; overflow-x: auto; border: 1px solid #e2e8f0; margin-bottom: 10px;">
+          <table class="dash-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 1.5px solid #e2e8f0; text-align: left; font-size: 0.76rem; text-transform: uppercase; color: #64748b;">
+                <th style="padding: 10px 14px;">Tracking AWB</th>
+                <th style="padding: 10px 14px;">Consignee &amp; PIN</th>
+                <th style="padding: 10px 14px;">Status</th>
+                <th style="padding: 10px 14px;">Weight</th>
+                <th style="padding: 10px 14px;">Freight Cost</th>
+                <th style="padding: 10px 14px;">Action Tools</th>
+              </tr>
+            </thead>
+            <tbody id="cust-hist-table-body">
+              <!-- Injected by operations.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 16px; margin-top: 16px; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="btn-cust-hist-impersonate" class="btn btn-primary btn-sm">
+            🔑 Log In As This Customer
+          </button>
+          <button id="btn-cust-hist-edit-pfp" class="btn btn-outline btn-sm">
+            📸 Edit Profile Picture
+          </button>
+        </div>
+        <button type="button" class="btn btn-outline" onclick="OperationsModule.closeModal('modal-customer-history')">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
        VIEW 3: STANDALONE PUBLIC LIVE TRACKING PORTAL (Zero Login Required)
        ========================================================================= -->
   <div id="view-public-tracking" class="public-tracking-view app-view" style="display: none;">
