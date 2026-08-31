@@ -9,6 +9,7 @@
 #define MAX_UUID_LEN 64
 #define MAX_STR_LEN 256
 #define MAX_TEXT_LEN 2048
+#define MAX_PFP_LEN 65536
 
 typedef enum {
     ROLE_SUPER_ADMIN = 0,
@@ -61,7 +62,7 @@ typedef struct {
     char phone[64];
     char allocated_hub_id[MAX_UUID_LEN];
     char api_key[MAX_STR_LEN];
-    char avatar_url[MAX_TEXT_LEN];
+    char avatar_url[MAX_PFP_LEN];
     bool is_active;
     char created_at[64];
 } UserRecord;

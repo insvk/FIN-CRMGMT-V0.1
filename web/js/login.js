@@ -6,6 +6,8 @@ const AuthModule = {
   selectedRegisterPfp: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&auto=format&fit=crop&q=80',
   isCustomUploaded: false,
 
+  _roleBound: false,
+
   init() {
     this.bindEvents();
     this.initRegisterPfp();
@@ -16,7 +18,8 @@ const AuthModule = {
     this.updatePreview(this.selectedRegisterPfp);
 
     const roleSelect = document.getElementById('reg-role');
-    if (roleSelect) {
+    if (roleSelect && !this._roleBound) {
+      this._roleBound = true;
       roleSelect.addEventListener('change', (e) => {
         if (!this.isCustomUploaded) {
           const role = e.target.value;
@@ -96,7 +99,13 @@ const AuthModule = {
 
   updatePreview(url) {
     const preview = document.getElementById('reg-pfp-preview');
-    if (preview) preview.src = url;
+    if (preview) {
+      preview.src = url;
+      preview.onerror = () => {
+        preview.onerror = null;
+        preview.src = 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&auto=format&fit=crop&q=80';
+      };
+    }
   },
 
   bindEvents() {

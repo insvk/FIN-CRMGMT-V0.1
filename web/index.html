@@ -213,12 +213,15 @@
         <span class="brand-pro-badge">MAIN DASHBAORD</span>
       </div>
 
-      <!-- User Card (Clickable to Edit Profile & Name) -->
-      <div class="sidebar-user" style="display: flex; align-items: center; justify-content: space-between;" title="Click to edit administrator name & profile details">
-        <div style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1;" onclick="OperationsModule.openEditUserModal(CRMGMT.state.currentUser?.id)">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-            alt="Avatar" class="sidebar-avatar" />
-          <div class="sidebar-user-info">
+      <!-- User Card (Clickable Avatar for PFP & Info for Profile Edit) -->
+      <div class="sidebar-user" style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+          <div style="position: relative; cursor: pointer;" onclick="event.stopPropagation(); OperationsModule.openPfpModal();" title="Click to customize profile picture">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+              alt="Avatar" class="sidebar-avatar" />
+            <span style="position: absolute; bottom: 0; right: 0; background: #3b7ddd; color: #fff; font-size: 9px; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">📷</span>
+          </div>
+          <div class="sidebar-user-info" style="cursor: pointer;" onclick="OperationsModule.openEditUserModal(CRMGMT.state.currentUser?.id)" title="Click to edit name & details">
             <div class="sidebar-user-name">
               <span class="user-name-display">Naresh S</span>
             </div>
@@ -517,6 +520,28 @@
               <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-new-shipment')">+ Quick
                 Dispatch</button>
             </div>
+          </div>
+
+          <!-- Customer Profile Welcome Banner -->
+          <div class="card" style="margin-bottom: 20px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0; border-left: 4px solid #3b7ddd;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="position: relative; cursor: pointer;" onclick="OperationsModule.openPfpModal()" title="Click to customize profile picture">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80" alt="Customer Avatar" class="cust-overview-avatar" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2.5px solid #3b7ddd; box-shadow: 0 3px 8px rgba(59,125,221,0.25);" />
+                <span style="position: absolute; bottom: -2px; right: -2px; background: #3b7ddd; color: #fff; font-size: 9px; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">📷</span>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h3 class="user-name-display" style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Saveetha Customer</h3>
+                  <span class="badge badge-success user-role-display">ENTERPRISE CUSTOMER</span>
+                </div>
+                <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">
+                  <span class="user-email-display">customer@saveetha.com</span> • Dedicated SIMATS Gateway Dispatch Desk
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="OperationsModule.openPfpModal()" style="display: flex; align-items: center; gap: 6px;">
+              📸 Change Profile Picture
+            </button>
           </div>
 
           <!-- 4 Customer Metric Cards -->

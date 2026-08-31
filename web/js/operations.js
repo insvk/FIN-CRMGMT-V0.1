@@ -379,7 +379,7 @@ const OperationsModule = {
     CRMGMT.toast('Profile picture updated & permanently saved!', 'success');
     this.closeModal('modal-edit-pfp');
 
-    if (CRMGMT.state.currentView === 'users') {
+    if (this.users && this.users.length > 0) {
       this.renderUsersTable(this.users);
     }
   },
@@ -391,11 +391,19 @@ const OperationsModule = {
   isNewUserCustomUploaded: false,
 
   openCreateUserModal() {
-    this.selectedNewUserPfp = (CRMGMT.curatedPresets || [])[0]?.url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80';
+    const role = document.getElementById('new-user-role')?.value || 'super_admin';
+    const defaultPreset = (CRMGMT.curatedPresets || []).find(p => p.role === role) || (CRMGMT.curatedPresets || [])[0];
+    this.selectedNewUserPfp = defaultPreset?.url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80';
     this.isNewUserCustomUploaded = false;
     
     const previewImg = document.getElementById('new-user-pfp-preview');
-    if (previewImg) previewImg.src = this.selectedNewUserPfp;
+    if (previewImg) {
+      previewImg.src = this.selectedNewUserPfp;
+      previewImg.onerror = () => {
+        previewImg.onerror = null;
+        previewImg.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80';
+      };
+    }
 
     const urlInput = document.getElementById('new-user-pfp-url');
     if (urlInput) urlInput.value = '';
@@ -585,7 +593,18 @@ const OperationsModule = {
     if (phoneInput) phoneInput.value = u.phone || '';
     if (roleInput) roleInput.value = u.role || 'standard_customer';
     if (hubInput) hubInput.value = u.allocated_hub_id || 'a0000000-0000-0000-0000-000000000001';
-    if (pfpImg) pfpImg.src = CRMGMT.getPfp(u.id, u.role);
+    if (pfpImg) {
+      pfpImg.src = CRMGMT.getPfp(u.id, u.role, u);
+      pfpImg.style.cursor = 'pointer';
+      pfpImg.title = 'Click to customize profile picture';
+      pfpImg.onclick = () => {
+        this.openPfpModal(u.id, u.full_name);
+      };
+      pfpImg.onerror = () => {
+        pfpImg.onerror = null;
+        pfpImg.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
+      };
+    }
     if (titleEl) {
       const isSelf = u.id === CRMGMT.state.currentUser?.id;
       titleEl.textContent = isSelf ? 'Edit My Name & Administrator Profile' : `Edit Profile: ${u.full_name.split('(')[0].trim()}`;
@@ -668,7 +687,13 @@ const OperationsModule = {
     const phoneEl = document.getElementById('cust-hist-phone');
     const hubEl = document.getElementById('cust-hist-hub');
 
-    if (avatarEl) avatarEl.src = pfp;
+    if (avatarEl) {
+      avatarEl.src = pfp;
+      avatarEl.onerror = () => {
+        avatarEl.onerror = null;
+        avatarEl.src = 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80';
+      };
+    }
     if (nameEl) nameEl.textContent = u.full_name;
     if (roleBadgeEl) {
       roleBadgeEl.textContent = u.role.replace(/_/g, ' ').toUpperCase();
@@ -876,9 +901,13 @@ const OperationsModule = {
       CRMGMT.state.currentUser = res.data.user;
       localStorage.setItem('crmgmt_token', res.data.token);
       localStorage.setItem('crmgmt_user', JSON.stringify(res.data.user));
+      if (res.data.user.avatar_url) {
+        CRMGMT.setPfp(res.data.user.id, res.data.user.avatar_url, false);
+      }
       CRMGMT.updateUserUI();
       CRMGMT.toast(`Now logged in as: ${res.data.user.full_name} (${res.data.user.role})`, 'success');
-      CRMGMT.navigate('dashboard');
+      const isCustomer = res.data.user.role === 'standard_customer' || res.data.user.role === 'enterprise_customer';
+      CRMGMT.navigate(isCustomer ? 'customer_dashboard' : 'dashboard');
     } else {
       CRMGMT.toast(res.data?.error || 'Failed to log in as user.', 'error');
     }

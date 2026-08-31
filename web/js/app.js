@@ -311,6 +311,9 @@ const CRMGMT = {
           canvas.height = Math.min(maxHeight, minDim);
 
           const ctx = canvas.getContext('2d');
+          // Fill background with white to prevent black artifacts on transparent PNGs/WebPs
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, canvas.width, canvas.height);
 
           try {
@@ -330,7 +333,9 @@ const CRMGMT = {
 
   // Profile Picture (PFP) Manager
   getPfp(userId, role, userObj) {
-    if (userObj && userObj.avatar_url) return userObj.avatar_url;
+    if (userObj && userObj.avatar_url && typeof userObj.avatar_url === 'string' && userObj.avatar_url.trim().length > 0) {
+      return userObj.avatar_url.trim();
+    }
     try {
       const pfps = JSON.parse(localStorage.getItem('crmgmt_custom_pfps') || '{}');
       if (userId && pfps[userId]) return pfps[userId];
@@ -390,13 +395,17 @@ const CRMGMT = {
     if (!u) return;
 
     document.querySelectorAll('.user-name-display').forEach(el => el.textContent = u.full_name || 'Naresh S (SIMATS Chief Systems Administrator)');
-    document.querySelectorAll('.user-role-display').forEach(el => el.textContent = (u.role || 'Super Admin').replace('_', ' ').toUpperCase());
-    document.querySelectorAll('.user-email-display').forEach(el => el.textContent = u.email);
+    document.querySelectorAll('.user-role-display').forEach(el => el.textContent = (u.role || 'Super Admin').replace(/_/g, ' ').toUpperCase());
+    document.querySelectorAll('.user-email-display').forEach(el => el.textContent = u.email || '');
 
-    // Update Profile Picture
+    // Update Profile Picture with automatic fallback on broken links
     const activePfp = this.getPfp(u.id, u.role, u);
-    document.querySelectorAll('.sidebar-avatar, .nav-avatar-img, .current-user-avatar').forEach(el => {
+    document.querySelectorAll('.sidebar-avatar, .nav-avatar-img, .current-user-avatar, .cust-overview-avatar').forEach(el => {
       el.src = activePfp;
+      el.onerror = () => {
+        el.onerror = null;
+        el.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
+      };
     });
 
     const roleSelector = document.getElementById('quick-role-select');

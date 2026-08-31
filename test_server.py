@@ -311,8 +311,11 @@ class RequestHandler(BaseHTTPRequestHandler):
                     if len(token_parts) >= 2:
                         uid = token_parts[1]
                         user = next((u for u in USERS if u["id"] == uid), None)
+
             if not user:
-                user = USERS[0]
+                # If neither user_id nor token matches, reject unauthorized
+                self._send_json({"success": False, "error": "User not found or unauthorized."}, 401)
+                return
 
             user['avatar_url'] = avatar_url
             self._send_json({
