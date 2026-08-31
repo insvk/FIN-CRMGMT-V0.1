@@ -3,8 +3,100 @@
 const AuthModule = {
   mode: 'login', // 'login' or 'register'
 
+  selectedRegisterPfp: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&auto=format&fit=crop&q=80',
+  isCustomUploaded: false,
+
   init() {
     this.bindEvents();
+    this.initRegisterPfp();
+  },
+
+  initRegisterPfp() {
+    this.renderPresets();
+    this.updatePreview(this.selectedRegisterPfp);
+
+    const roleSelect = document.getElementById('reg-role');
+    if (roleSelect) {
+      roleSelect.addEventListener('change', (e) => {
+        if (!this.isCustomUploaded) {
+          const role = e.target.value;
+          const defaultPreset = (CRMGMT.curatedPresets || []).find(p => p.role === role) || (CRMGMT.curatedPresets || [])[8];
+          if (defaultPreset) {
+            this.selectPreset(defaultPreset.url, null, false);
+          }
+        }
+      });
+    }
+  },
+
+  renderPresets() {
+    const container = document.getElementById('reg-pfp-presets-grid');
+    if (!container || !CRMGMT.curatedPresets) return;
+    container.innerHTML = '';
+
+    CRMGMT.curatedPresets.forEach((p) => {
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.className = `pfp-preset-item reg-preset-item ${p.url === this.selectedRegisterPfp ? 'selected' : ''}`;
+      img.title = `${p.name} (${p.role.replace('_', ' ')})`;
+      img.alt = p.name;
+      img.onclick = () => this.selectPreset(p.url, img, true);
+      container.appendChild(img);
+    });
+  },
+
+  selectPreset(url, el, manual = true) {
+    this.selectedRegisterPfp = url;
+    if (manual) this.isCustomUploaded = false;
+    this.updatePreview(url);
+
+    document.querySelectorAll('.reg-preset-item').forEach(i => {
+      if (i.src === url || (el && i === el)) {
+        i.classList.add('selected');
+      } else {
+        i.classList.remove('selected');
+      }
+    });
+
+    const urlInput = document.getElementById('reg-pfp-url-input');
+    if (urlInput) urlInput.value = url.startsWith('data:') ? '' : url;
+  },
+
+  async handleFileUpload(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      CRMGMT.toast('Optimizing and loading photo...', 'info');
+      const dataUrl = await CRMGMT.compressImageFile(file, 256, 256, 0.85);
+      this.selectedRegisterPfp = dataUrl;
+      this.isCustomUploaded = true;
+      this.updatePreview(dataUrl);
+
+      document.querySelectorAll('.reg-preset-item').forEach(i => i.classList.remove('selected'));
+      const urlInput = document.getElementById('reg-pfp-url-input');
+      if (urlInput) urlInput.value = '';
+      CRMGMT.toast('Profile photo selected!', 'success');
+    } catch (err) {
+      CRMGMT.toast(err.message || 'Failed to process image.', 'error');
+    }
+  },
+
+  handleUrlChange(url) {
+    if (url && url.trim().length > 5) {
+      this.selectedRegisterPfp = url.trim();
+      this.isCustomUploaded = true;
+      this.updatePreview(this.selectedRegisterPfp);
+      document.querySelectorAll('.reg-preset-item').forEach(i => {
+        if (i.src === this.selectedRegisterPfp) i.classList.add('selected');
+        else i.classList.remove('selected');
+      });
+    }
+  },
+
+  updatePreview(url) {
+    const preview = document.getElementById('reg-pfp-preview');
+    if (preview) preview.src = url;
   },
 
   bindEvents() {
@@ -50,10 +142,14 @@ const AuthModule = {
 
           localStorage.setItem('crmgmt_token', res.data.token);
           localStorage.setItem('crmgmt_user', JSON.stringify(res.data.user));
+          if (res.data.user.avatar_url) {
+            CRMGMT.setPfp(res.data.user.id, res.data.user.avatar_url, false);
+          }
 
           CRMGMT.updateUserUI();
           CRMGMT.toast(`Welcome back, ${res.data.user.full_name}!`, 'success');
-          CRMGMT.navigate('dashboard');
+          const isCustomer = res.data.user.role === 'standard_customer' || res.data.user.role === 'enterprise_customer';
+          CRMGMT.navigate(isCustomer ? 'customer_dashboard' : 'dashboard');
         } else {
           CRMGMT.toast(res.data?.error || 'Authentication failed. Please verify your credentials.', 'error');
         }
@@ -70,25 +166,35 @@ const AuthModule = {
         const password = document.getElementById('reg-password').value.trim();
         const phone = document.getElementById('reg-phone').value.trim();
         const role = document.getElementById('reg-role').value;
+        const avatar_url = AuthModule.selectedRegisterPfp;
 
         if (!email || !password || !full_name) {
           CRMGMT.toast('Please fill in all mandatory fields.', 'error');
           return;
         }
 
+        const btn = regForm.querySelector('button[type="submit"]');
+        if (btn) { btn.textContent = 'Creating Account...'; btn.disabled = true; }
+
         const res = await CRMGMT.api('/api/v1/auth/register', {
           method: 'POST',
-          body: JSON.stringify({ full_name, email, password, phone, role })
+          body: JSON.stringify({ full_name, email, password, phone, role, avatar_url })
         });
+
+        if (btn) { btn.textContent = 'Register Account'; btn.disabled = false; }
 
         if (res.data && res.data.success) {
           CRMGMT.state.token = res.data.token;
           CRMGMT.state.currentUser = res.data.user;
           localStorage.setItem('crmgmt_token', res.data.token);
           localStorage.setItem('crmgmt_user', JSON.stringify(res.data.user));
+          if (avatar_url) {
+            CRMGMT.setPfp(res.data.user.id, avatar_url, false);
+          }
           CRMGMT.updateUserUI();
           CRMGMT.toast(`Account registered successfully! Welcome ${full_name}.`, 'success');
-          CRMGMT.navigate('dashboard');
+          const isCustomer = role === 'standard_customer' || role === 'enterprise_customer';
+          CRMGMT.navigate(isCustomer ? 'customer_dashboard' : 'dashboard');
         } else {
           CRMGMT.toast(res.data?.error || 'Registration failed.', 'error');
         }
@@ -113,6 +219,7 @@ const AuthModule = {
     if (mode === 'register') {
       if (loginSection) loginSection.style.display = 'none';
       if (regSection) regSection.style.display = 'block';
+      this.initRegisterPfp();
     } else {
       if (loginSection) loginSection.style.display = 'block';
       if (regSection) regSection.style.display = 'none';
@@ -120,6 +227,7 @@ const AuthModule = {
   }
 };
 
+window.AuthModule = AuthModule;
 window.switchAuthMode = (mode) => AuthModule.switchMode(mode);
 
 window.addEventListener('DOMContentLoaded', () => {

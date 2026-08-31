@@ -139,7 +139,7 @@ int auth_login(const char *email, const char *password, char *token_out, size_t 
     return auth_create_jwt(user, NULL, token_out, token_len);
 }
 
-int auth_register(const char *email, const char *password, const char *full_name, const char *phone, UserRole role, const char *hub_id, char *token_out, size_t token_len, UserRecord **user_out) {
+int auth_register(const char *email, const char *password, const char *full_name, const char *phone, UserRole role, const char *hub_id, const char *avatar_url, char *token_out, size_t token_len, UserRecord **user_out) {
     if (!email || !password || !full_name || !user_out) return -1;
     *user_out = NULL;
 
@@ -156,6 +156,7 @@ int auth_register(const char *email, const char *password, const char *full_name
     snprintf(new_user.full_name, sizeof(new_user.full_name), "%s", full_name);
     if (phone) snprintf(new_user.phone, sizeof(new_user.phone), "%s", phone);
     if (hub_id) snprintf(new_user.allocated_hub_id, sizeof(new_user.allocated_hub_id), "%s", hub_id);
+    if (avatar_url) snprintf(new_user.avatar_url, sizeof(new_user.avatar_url), "%s", avatar_url);
 
     char rand_key[33];
     crypto_generate_random_hex(rand_key, 16);

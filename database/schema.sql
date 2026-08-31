@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(32) NOT NULL,
     allocated_hub_id UUID REFERENCES hubs(id) ON DELETE SET NULL,
     api_key VARCHAR(64) UNIQUE,
+    avatar_url TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );

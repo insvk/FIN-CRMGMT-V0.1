@@ -158,14 +158,15 @@ static void seed_default_memory_db(void) {
         const char *id, *email, *name, *phone, *api_key;
         UserRole role;
         const char *hub;
+        const char *avatar_url;
     } users_data[] = {
-        {"u0000000-0000-0000-0000-000000000001", "admin@crmgmt.io", "Naresh S (SIMATS Chief Systems Administrator)", "+91 98400 11223", "crm_master_key_8f3a9e22", ROLE_SUPER_ADMIN, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000002", "hub.chennai@crmgmt.io", "Karthik Ramaswamy (Chennai Hub Operations Lead)", "+91 98401 22334", "crm_hub_che_key_44b1c", ROLE_HUB_MANAGER, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000003", "agent.che01@crmgmt.io", "Vigneshwaran M (Fleet Dispatch Agent)", "+91 98402 33445", "crm_agent_che_12345", ROLE_DELIVERY_AGENT, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000004", "enterprise@saveetha.com", "Dr. Meenakshi Sundaram (Saveetha BioMed Procurement)", "+91 98403 44556", "crm_ent_sav_99a8b7", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000001"},
-        {"u0000000-0000-0000-0000-000000000005", "ananya.sharma@gmail.com", "Ananya Sharma (Retail Consignee & Client)", "+91 98404 55667", "", ROLE_STANDARD_CUSTOMER, ""},
-        {"u0000000-0000-0000-0000-000000000006", "rajesh.verma@infosys.com", "Rajesh Verma (VP Supply Chain, Infosys)", "+91 98110 33441", "crm_ent_inf_88c42a", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000002"},
-        {"u0000000-0000-0000-0000-000000000007", "arvind.swaminathan@apollo.org", "Dr. Arvind Swaminathan (Apollo Hospitals)", "+91 98840 99887", "", ROLE_STANDARD_CUSTOMER, "a0000000-0000-0000-0000-000000000001"}
+        {"u0000000-0000-0000-0000-000000000001", "admin@crmgmt.io", "Naresh S (SIMATS Chief Systems Administrator)", "+91 98400 11223", "crm_master_key_8f3a9e22", ROLE_SUPER_ADMIN, "a0000000-0000-0000-0000-000000000001", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"},
+        {"u0000000-0000-0000-0000-000000000002", "hub.chennai@crmgmt.io", "Karthik Ramaswamy (Chennai Hub Operations Lead)", "+91 98401 22334", "crm_hub_che_key_44b1c", ROLE_HUB_MANAGER, "a0000000-0000-0000-0000-000000000001", "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"},
+        {"u0000000-0000-0000-0000-000000000003", "agent.che01@crmgmt.io", "Vigneshwaran M (Fleet Dispatch Agent)", "+91 98402 33445", "crm_agent_che_12345", ROLE_DELIVERY_AGENT, "a0000000-0000-0000-0000-000000000001", "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"},
+        {"u0000000-0000-0000-0000-000000000004", "enterprise@saveetha.com", "Dr. Meenakshi Sundaram (Saveetha BioMed Procurement)", "+91 98403 44556", "crm_ent_sav_99a8b7", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000001", "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80"},
+        {"u0000000-0000-0000-0000-000000000005", "ananya.sharma@gmail.com", "Ananya Sharma (Retail Consignee & Client)", "+91 98404 55667", "", ROLE_STANDARD_CUSTOMER, "", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80"},
+        {"u0000000-0000-0000-0000-000000000006", "rajesh.verma@infosys.com", "Rajesh Verma (VP Supply Chain, Infosys)", "+91 98110 33441", "crm_ent_inf_88c42a", ROLE_ENTERPRISE_CUSTOMER, "a0000000-0000-0000-0000-000000000002", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"},
+        {"u0000000-0000-0000-0000-000000000007", "arvind.swaminathan@apollo.org", "Dr. Arvind Swaminathan (Apollo Hospitals)", "+91 98840 99887", "", ROLE_STANDARD_CUSTOMER, "a0000000-0000-0000-0000-000000000001", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80"}
     };
 
     g_user_count = 7;
@@ -179,6 +180,7 @@ static void seed_default_memory_db(void) {
         snprintf(g_users[i].phone, sizeof(g_users[i].phone), "%s", users_data[i].phone);
         snprintf(g_users[i].allocated_hub_id, sizeof(g_users[i].allocated_hub_id), "%s", users_data[i].hub);
         snprintf(g_users[i].api_key, sizeof(g_users[i].api_key), "%s", users_data[i].api_key);
+        snprintf(g_users[i].avatar_url, sizeof(g_users[i].avatar_url), "%s", users_data[i].avatar_url);
         g_users[i].is_active = true;
         snprintf(g_users[i].created_at, sizeof(g_users[i].created_at), "%s", now_str);
     }
@@ -488,6 +490,7 @@ cJSON *db_get_all_users_json(void) {
         cJSON_AddStringToObject(obj, "full_name", g_users[i].full_name);
         cJSON_AddStringToObject(obj, "phone", g_users[i].phone);
         cJSON_AddStringToObject(obj, "allocated_hub_id", g_users[i].allocated_hub_id);
+        cJSON_AddStringToObject(obj, "avatar_url", g_users[i].avatar_url);
         cJSON_AddBoolToObject(obj, "is_active", g_users[i].is_active);
         cJSON_AddItemToArray(arr, obj);
     }
@@ -518,6 +521,14 @@ UserRecord *db_find_user_by_api_key(const char *api_key) {
     return NULL;
 }
 
+int db_update_user_pfp(const char *user_id, const char *avatar_url) {
+    if (!user_id || !avatar_url) return -1;
+    UserRecord *u = db_find_user_by_id(user_id);
+    if (!u) return -2;
+    snprintf(u->avatar_url, sizeof(u->avatar_url), "%s", avatar_url);
+    return 0;
+}
+
 int db_create_user(UserRecord *new_user) {
     if (!new_user || g_user_count >= MAX_USERS) return -1;
     if (db_find_user_by_email(new_user->email)) return -2; // Duplicate
@@ -530,6 +541,20 @@ int db_create_user(UserRecord *new_user) {
     snprintf(new_user->role_name, sizeof(new_user->role_name), "%s", role_to_string(new_user->role));
     get_iso_now(new_user->created_at, sizeof(new_user->created_at));
     new_user->is_active = true;
+
+    if (strlen(new_user->avatar_url) == 0) {
+        if (new_user->role == ROLE_HUB_MANAGER) {
+            snprintf(new_user->avatar_url, sizeof(new_user->avatar_url), "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80");
+        } else if (new_user->role == ROLE_DELIVERY_AGENT) {
+            snprintf(new_user->avatar_url, sizeof(new_user->avatar_url), "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80");
+        } else if (new_user->role == ROLE_ENTERPRISE_CUSTOMER) {
+            snprintf(new_user->avatar_url, sizeof(new_user->avatar_url), "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80");
+        } else if (new_user->role == ROLE_STANDARD_CUSTOMER) {
+            snprintf(new_user->avatar_url, sizeof(new_user->avatar_url), "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80");
+        } else {
+            snprintf(new_user->avatar_url, sizeof(new_user->avatar_url), "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80");
+        }
+    }
 
     g_users[g_user_count] = *new_user;
     g_user_count++;

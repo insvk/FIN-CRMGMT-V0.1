@@ -145,7 +145,45 @@
               </select>
             </div>
 
-            <button type="submit" class="btn-login-main" style="margin-top: 10px;">Register Account</button>
+            <!-- Profile Picture Customizer -->
+            <div class="form-group reg-pfp-section">
+              <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Choose Profile Picture (PFP)</span>
+                <span style="font-size: 0.72rem; color: #3b7ddd; font-weight: 700;">Custom or Curated</span>
+              </label>
+
+              <div class="reg-pfp-picker-card">
+                <!-- Preview & Upload trigger -->
+                <div class="reg-pfp-header">
+                  <div class="reg-pfp-preview-wrap">
+                    <img id="reg-pfp-preview" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&auto=format&fit=crop&q=80" alt="Avatar Preview" class="reg-pfp-preview-img" />
+                    <div class="reg-pfp-badge" title="Live Chosen Avatar">ACTIVE</div>
+                  </div>
+                  <div class="reg-pfp-actions">
+                    <input type="file" id="reg-pfp-file-input" accept="image/*" style="display: none;" onchange="AuthModule.handleFileUpload(this)" />
+                    <button type="button" class="btn btn-outline btn-sm reg-upload-btn" onclick="document.getElementById('reg-pfp-file-input').click()">
+                      📷 Upload from Device
+                    </button>
+                    <div class="reg-pfp-tip">PNG, JPG, WebP supported</div>
+                  </div>
+                </div>
+
+                <!-- Custom URL input -->
+                <div style="margin-top: 10px;">
+                  <input type="url" id="reg-pfp-url-input" class="form-input" style="font-size: 0.82rem; padding: 8px 12px;" placeholder="Or paste image URL (https://...)" oninput="AuthModule.handleUrlChange(this.value)" />
+                </div>
+
+                <!-- Presets Grid -->
+                <div style="margin-top: 12px;">
+                  <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Or Pick a Curated Avatar Preset:</div>
+                  <div id="reg-pfp-presets-grid" class="pfp-presets-grid reg-presets-grid">
+                    <!-- Injected dynamically by AuthModule.renderPresets() -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-login-main" style="margin-top: 14px;">Register Account</button>
           </form>
 
           <div class="auth-footer" style="margin-top: 20px;">
@@ -1095,7 +1133,7 @@
               <div style="font-size: 0.85rem; color: #64748b;">Enterprise Identity Management • Role Allocation •
                 1-Click Access Impersonation</div>
             </div>
-            <button class="btn btn-primary" onclick="OperationsModule.openModal('modal-create-user')">
+            <button class="btn btn-primary" onclick="OperationsModule.openCreateUserModal()">
               + Provision New Account
             </button>
           </div>
@@ -1395,6 +1433,34 @@
           </select>
         </div>
 
+        <!-- Assign Profile Picture (PFP) for New User -->
+        <div class="form-group" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;">
+          <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span>Assign Profile Picture (PFP)</span>
+            <span style="font-size: 0.72rem; color: #3b7ddd; font-weight: 700;">Custom or Role Preset</span>
+          </label>
+
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <img id="new-user-pfp-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Preview" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2.5px solid #3b7ddd; flex-shrink: 0; box-shadow: 0 2px 6px rgba(59,125,221,0.25);" />
+            <div style="flex: 1;">
+              <input type="file" id="new-user-pfp-file" accept="image/*" style="display: none;" onchange="OperationsModule.handleNewUserPfpFileUpload(this)" />
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('new-user-pfp-file').click()">
+                  📁 Upload Photo
+                </button>
+                <input type="url" id="new-user-pfp-url" class="form-input" style="font-size: 0.8rem; padding: 6px 10px; flex: 1; min-width: 140px;" placeholder="Or image URL (https://...)" oninput="OperationsModule.handleNewUserPfpUrlChange(this.value)" />
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Curated Enterprise Presets:</div>
+            <div id="new-user-pfp-presets-grid" class="pfp-presets-grid" style="margin: 0; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+              <!-- Injected by OperationsModule.renderNewUserPfpPresets() -->
+            </div>
+          </div>
+        </div>
+
         <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
           <button type="button" class="btn btn-outline"
             onclick="OperationsModule.closeModal('modal-create-user')">Cancel</button>
@@ -1487,26 +1553,14 @@
 
       <!-- Curated Presets -->
       <div class="form-group">
-        <label class="form-label">Or Choose from Curated Enterprise Avatars</label>
-        <div class="pfp-presets-grid">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
-            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
-            title="Executive Administrator" />
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
-            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
-            title="Chief Systems Architect" />
-          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
-            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
-            title="Hub Operations Manager" />
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"
-            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
-            title="Fleet Dispatch Officer" />
-          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80"
-            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
-            title="Healthcare Procurement Lead" />
-          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80"
-            class="pfp-preset-item" onclick="OperationsModule.selectPresetPfp(this.src, this)"
-            title="Courier Operations Unit" />
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label class="form-label" style="margin-bottom: 0;">Choose from Curated Enterprise Avatars</label>
+          <button type="button" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 3px 8px;" onclick="OperationsModule.resetPfpToDefault()">
+            ↺ Reset to Default
+          </button>
+        </div>
+        <div id="pfp-presets-grid-container" class="pfp-presets-grid">
+          <!-- Injected dynamically by OperationsModule.renderEditPfpPresets() -->
         </div>
       </div>
 

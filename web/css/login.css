@@ -243,9 +243,118 @@
   height: 18px;
 }
 
-/* Footer Link */
+/* Registration Profile Picture Customizer */
+.reg-pfp-section {
+  margin-top: 14px;
+}
+
+.reg-pfp-picker-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.reg-pfp-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.reg-pfp-preview-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.reg-pfp-preview-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3b7ddd;
+  box-shadow: 0 4px 10px rgba(59, 125, 221, 0.25);
+  display: block;
+}
+
+.reg-pfp-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.reg-pfp-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reg-upload-btn {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.reg-upload-btn:hover {
+  background: #f1f5f9;
+  border-color: #3b7ddd;
+  color: #3b7ddd;
+}
+
+.reg-pfp-tip {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.reg-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin: 6px 0 0 0;
+}
+
+.pfp-preset-item {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.pfp-preset-item:hover {
+  transform: scale(1.15);
+  border-color: #3b7ddd;
+}
+
+.pfp-preset-item.selected {
+  border-color: #3b7ddd;
+  box-shadow: 0 0 0 3px rgba(59, 125, 221, 0.35);
+  transform: scale(1.05);
+}
+
+
+
+
+/* Auth Footer Switch Link */
 .auth-footer {
-  margin-top: 24px;
+  margin-top: 20px;
   text-align: center;
   font-size: 0.86rem;
   color: #4a5568;
@@ -257,8 +366,6 @@
   text-decoration: underline;
   cursor: pointer;
 }
-
-
 
 /* Right Illustration Pane (50%) */
 .auth-right-pane {

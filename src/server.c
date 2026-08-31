@@ -107,6 +107,7 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
                     cJSON_AddStringToObject(u_obj, "role", user->role_name);
                     cJSON_AddStringToObject(u_obj, "phone", user->phone);
                     cJSON_AddStringToObject(u_obj, "allocated_hub_id", user->allocated_hub_id);
+                    cJSON_AddStringToObject(u_obj, "avatar_url", user->avatar_url);
                     cJSON_AddItemToObject(resp_json, "user", u_obj);
                 } else {
                     *status_code_out = 401;
@@ -131,6 +132,7 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
             cJSON *ph = cJSON_GetObjectItem(req, "phone");
             cJSON *rl = cJSON_GetObjectItem(req, "role");
             cJSON *hb = cJSON_GetObjectItem(req, "hub_id");
+            cJSON *av = cJSON_GetObjectItem(req, "avatar_url");
 
             const char *email_str = em ? em->valuestring : NULL;
             const char *pw_str = pw ? pw->valuestring : NULL;
@@ -138,10 +140,11 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
             const char *ph_str = ph ? ph->valuestring : "";
             UserRole r = rl ? string_to_role(rl->valuestring) : ROLE_STANDARD_CUSTOMER;
             const char *hub_str = hb ? hb->valuestring : NULL;
+            const char *av_str = av ? av->valuestring : NULL;
 
             char token[1024] = {0};
             UserRecord *user = NULL;
-            int res = auth_register(email_str, pw_str, fn_str, ph_str, r, hub_str, token, sizeof(token), &user);
+            int res = auth_register(email_str, pw_str, fn_str, ph_str, r, hub_str, av_str, token, sizeof(token), &user);
             resp_json = cJSON_CreateObject();
             if (res == 0 && user) {
                 cJSON_AddBoolToObject(resp_json, "success", true);
@@ -151,6 +154,7 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
                 cJSON_AddStringToObject(u_obj, "email", user->email);
                 cJSON_AddStringToObject(u_obj, "full_name", user->full_name);
                 cJSON_AddStringToObject(u_obj, "role", user->role_name);
+                cJSON_AddStringToObject(u_obj, "avatar_url", user->avatar_url);
                 cJSON_AddItemToObject(resp_json, "user", u_obj);
             } else if (res == -2) {
                 *status_code_out = 409;
@@ -160,6 +164,40 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
                 *status_code_out = 400;
                 cJSON_AddBoolToObject(resp_json, "success", false);
                 cJSON_AddStringToObject(resp_json, "error", "Registration failed.");
+            }
+            cJSON_Delete(req);
+        }
+    }
+    else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/v1/auth/pfp") == 0) {
+        cJSON *req = cJSON_Parse(body);
+        if (!req) {
+            *status_code_out = 400;
+            resp_json = cJSON_CreateObject();
+            cJSON_AddBoolToObject(resp_json, "success", false);
+            cJSON_AddStringToObject(resp_json, "error", "Invalid JSON.");
+        } else {
+            cJSON *uid = cJSON_GetObjectItem(req, "user_id");
+            cJSON *pfp = cJSON_GetObjectItem(req, "avatar_url");
+            const char *target_id = (uid && uid->valuestring) ? uid->valuestring : (caller ? caller->id : NULL);
+            const char *pfp_url = pfp ? pfp->valuestring : NULL;
+
+            if (target_id && pfp_url) {
+                int res = db_update_user_pfp(target_id, pfp_url);
+                resp_json = cJSON_CreateObject();
+                if (res == 0) {
+                    cJSON_AddBoolToObject(resp_json, "success", true);
+                    cJSON_AddStringToObject(resp_json, "message", "Profile picture updated successfully.");
+                    cJSON_AddStringToObject(resp_json, "avatar_url", pfp_url);
+                } else {
+                    *status_code_out = 404;
+                    cJSON_AddBoolToObject(resp_json, "success", false);
+                    cJSON_AddStringToObject(resp_json, "error", "User not found.");
+                }
+            } else {
+                *status_code_out = 400;
+                resp_json = cJSON_CreateObject();
+                cJSON_AddBoolToObject(resp_json, "success", false);
+                cJSON_AddStringToObject(resp_json, "error", "Missing user_id or avatar_url.");
             }
             cJSON_Delete(req);
         }
@@ -175,6 +213,7 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
             cJSON_AddStringToObject(u_obj, "role", caller->role_name);
             cJSON_AddStringToObject(u_obj, "phone", caller->phone);
             cJSON_AddStringToObject(u_obj, "allocated_hub_id", caller->allocated_hub_id);
+            cJSON_AddStringToObject(u_obj, "avatar_url", caller->avatar_url);
             cJSON_AddItemToObject(resp_json, "user", u_obj);
         } else {
             *status_code_out = 401;
@@ -198,7 +237,8 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
         const char *ph = cJSON_GetObjectItem(req, "phone") ? cJSON_GetObjectItem(req, "phone")->valuestring : NULL;
         const char *hb = cJSON_GetObjectItem(req, "allocated_hub_id") ? cJSON_GetObjectItem(req, "allocated_hub_id")->valuestring : NULL;
         const char *pw = cJSON_GetObjectItem(req, "password") ? cJSON_GetObjectItem(req, "password")->valuestring : NULL;
-        resp_json = handle_admin_user_create(caller, em, nm, rl, ph, hb, pw);
+        const char *av = cJSON_GetObjectItem(req, "avatar_url") ? cJSON_GetObjectItem(req, "avatar_url")->valuestring : NULL;
+        resp_json = handle_admin_user_create(caller, em, nm, rl, ph, hb, pw, av);
         if (req) cJSON_Delete(req);
     }
     else if (strcmp(method, "POST") == 0 && strcmp(path, "/api/v1/admin/users/update") == 0) {
@@ -210,6 +250,7 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
             cJSON *phone = cJSON_GetObjectItem(req, "phone");
             cJSON *role_str = cJSON_GetObjectItem(req, "role");
             cJSON *hub = cJSON_GetObjectItem(req, "allocated_hub_id");
+            cJSON *av = cJSON_GetObjectItem(req, "avatar_url");
 
             if (uid && uid->valuestring) {
                 UserRecord *u = db_find_user_by_id(uid->valuestring);
@@ -222,6 +263,7 @@ char *server_dispatch_api(const char *method, const char *path, const char *auth
                         snprintf(u->role_name, sizeof(u->role_name), "%s", role_to_string(u->role));
                     }
                     if (hub && hub->valuestring) snprintf(u->allocated_hub_id, sizeof(u->allocated_hub_id), "%s", hub->valuestring);
+                    if (av && av->valuestring) snprintf(u->avatar_url, sizeof(u->avatar_url), "%s", av->valuestring);
 
                     resp_json = cJSON_CreateObject();
                     cJSON_AddBoolToObject(resp_json, "success", true);

@@ -38,6 +38,20 @@ const OperationsModule = {
     if (exportBtn) {
       exportBtn.addEventListener('click', () => this.exportCSV());
     }
+
+    // Role change in user provisioning modal
+    const newUserRole = document.getElementById('new-user-role');
+    if (newUserRole) {
+      newUserRole.addEventListener('change', (e) => {
+        if (!this.isNewUserCustomUploaded) {
+          const role = e.target.value;
+          const defaultPreset = (CRMGMT.curatedPresets || []).find(p => p.role === role) || (CRMGMT.curatedPresets || [])[0];
+          if (defaultPreset) {
+            this.selectNewUserPreset(defaultPreset.url, null, false);
+          }
+        }
+      });
+    }
   },
 
   async loadShipments() {
@@ -244,33 +258,59 @@ const OperationsModule = {
 
   openPfpModal(userId, userName) {
     this.pfpTargetUserId = userId || CRMGMT.state.currentUser?.id;
-    const name = userName || CRMGMT.state.currentUser?.full_name || 'User';
-    const role = CRMGMT.state.currentUser?.role || 'super_admin';
-    const currentPfp = CRMGMT.getPfp(this.pfpTargetUserId, role);
+    let targetUser = (this.users || []).find(u => u.id === this.pfpTargetUserId);
+    if (!targetUser && this.pfpTargetUserId === CRMGMT.state.currentUser?.id) {
+      targetUser = CRMGMT.state.currentUser;
+    }
+    const name = userName || targetUser?.full_name || 'User';
+    const role = targetUser?.role || CRMGMT.state.currentUser?.role || 'super_admin';
+    const currentPfp = CRMGMT.getPfp(this.pfpTargetUserId, role, targetUser);
     this.pfpSelectedUrl = currentPfp;
 
     const titleEl = document.getElementById('pfp-modal-title');
     const previewImg = document.getElementById('pfp-preview-img');
     const urlInput = document.getElementById('pfp-url-input');
 
-    if (titleEl) titleEl.textContent = `Customize Profile Picture: ${name}`;
+    if (titleEl) titleEl.textContent = `Customize Profile Picture: ${name.split('(')[0].trim()}`;
     if (previewImg) previewImg.src = currentPfp;
     if (urlInput) urlInput.value = currentPfp.startsWith('data:') ? '' : currentPfp;
 
+    this.renderEditPfpPresets(currentPfp);
     this.openModal('modal-edit-pfp');
   },
 
-  handlePfpFileUpload(input) {
-    const file = input.files[0];
+  renderEditPfpPresets(currentUrl) {
+    const container = document.getElementById('pfp-presets-grid-container');
+    if (!container || !CRMGMT.curatedPresets) return;
+    container.innerHTML = '';
+
+    CRMGMT.curatedPresets.forEach(p => {
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.className = `pfp-preset-item modal-pfp-preset ${p.url === currentUrl ? 'selected' : ''}`;
+      img.title = `${p.name} (${p.role.replace('_', ' ')})`;
+      img.alt = p.name;
+      img.onclick = () => this.selectPresetPfp(p.url, img);
+      container.appendChild(img);
+    });
+  },
+
+  async handlePfpFileUpload(input) {
+    const file = input.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target.result;
+      try {
+        CRMGMT.toast('Optimizing and loading image...', 'info');
+        const dataUrl = await CRMGMT.compressImageFile(file, 256, 256, 0.85);
         this.pfpSelectedUrl = dataUrl;
         const previewImg = document.getElementById('pfp-preview-img');
         if (previewImg) previewImg.src = dataUrl;
-      };
-      reader.readAsDataURL(file);
+        document.querySelectorAll('.modal-pfp-preset').forEach(i => i.classList.remove('selected'));
+        const urlInput = document.getElementById('pfp-url-input');
+        if (urlInput) urlInput.value = '';
+        CRMGMT.toast('Photo loaded!', 'success');
+      } catch (err) {
+        CRMGMT.toast(err.message || 'Failed to read image.', 'error');
+      }
     }
   },
 
@@ -279,6 +319,10 @@ const OperationsModule = {
       this.pfpSelectedUrl = url.trim();
       const previewImg = document.getElementById('pfp-preview-img');
       if (previewImg) previewImg.src = this.pfpSelectedUrl;
+      document.querySelectorAll('.modal-pfp-preset').forEach(i => {
+        if (i.src === this.pfpSelectedUrl) i.classList.add('selected');
+        else i.classList.remove('selected');
+      });
     }
   },
 
@@ -289,22 +333,139 @@ const OperationsModule = {
     if (previewImg) previewImg.src = url;
     if (urlInput) urlInput.value = url;
 
-    document.querySelectorAll('.pfp-preset-item').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll('.modal-pfp-preset').forEach(i => i.classList.remove('selected'));
     if (el) el.classList.add('selected');
   },
 
-  saveCustomPfp() {
+  resetPfpToDefault() {
+    let targetUser = (this.users || []).find(u => u.id === this.pfpTargetUserId);
+    if (!targetUser && this.pfpTargetUserId === CRMGMT.state.currentUser?.id) {
+      targetUser = CRMGMT.state.currentUser;
+    }
+    const role = targetUser?.role || 'super_admin';
+    const defaultPreset = (CRMGMT.curatedPresets || []).find(p => p.role === role) || (CRMGMT.curatedPresets || [])[0];
+    if (defaultPreset) {
+      this.selectPresetPfp(defaultPreset.url, null);
+      CRMGMT.toast(`Reset to official default avatar for ${role.replace('_', ' ')}.`, 'info');
+    }
+  },
+
+  async saveCustomPfp() {
     if (!this.pfpSelectedUrl) {
       CRMGMT.toast('Please select or upload a valid photo.', 'warning');
       return;
     }
 
-    CRMGMT.setPfp(this.pfpTargetUserId, this.pfpSelectedUrl);
-    CRMGMT.toast('Profile picture updated successfully!', 'success');
+    await CRMGMT.setPfp(this.pfpTargetUserId, this.pfpSelectedUrl, true);
+    
+    // Update memory array
+    const target = (this.users || []).find(u => u.id === this.pfpTargetUserId);
+    if (target) target.avatar_url = this.pfpSelectedUrl;
+
+    // Update customer history modal if open
+    if (this.selectedHistoryUser && this.selectedHistoryUser.id === this.pfpTargetUserId) {
+      this.selectedHistoryUser.avatar_url = this.pfpSelectedUrl;
+      const histAvatar = document.getElementById('cust-hist-avatar');
+      if (histAvatar) histAvatar.src = this.pfpSelectedUrl;
+    }
+
+    // Update edit user modal if open
+    const editPfpImg = document.getElementById('edit-user-modal-pfp');
+    const editUserId = document.getElementById('edit-user-id')?.value;
+    if (editPfpImg && editUserId === this.pfpTargetUserId) {
+      editPfpImg.src = this.pfpSelectedUrl;
+    }
+
+    CRMGMT.toast('Profile picture updated & permanently saved!', 'success');
     this.closeModal('modal-edit-pfp');
 
     if (CRMGMT.state.currentView === 'users') {
-      this.loadUsers();
+      this.renderUsersTable(this.users);
+    }
+  },
+
+  // =========================================================================
+  // ADMIN USER CREATION PFP PICKER
+  // =========================================================================
+  selectedNewUserPfp: '',
+  isNewUserCustomUploaded: false,
+
+  openCreateUserModal() {
+    this.selectedNewUserPfp = (CRMGMT.curatedPresets || [])[0]?.url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80';
+    this.isNewUserCustomUploaded = false;
+    
+    const previewImg = document.getElementById('new-user-pfp-preview');
+    if (previewImg) previewImg.src = this.selectedNewUserPfp;
+
+    const urlInput = document.getElementById('new-user-pfp-url');
+    if (urlInput) urlInput.value = '';
+
+    this.renderNewUserPfpPresets();
+    this.openModal('modal-create-user');
+  },
+
+  renderNewUserPfpPresets() {
+    const container = document.getElementById('new-user-pfp-presets-grid');
+    if (!container || !CRMGMT.curatedPresets) return;
+    container.innerHTML = '';
+
+    CRMGMT.curatedPresets.forEach(p => {
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.className = `pfp-preset-item new-user-preset ${p.url === this.selectedNewUserPfp ? 'selected' : ''}`;
+      img.title = `${p.name} (${p.role.replace('_', ' ')})`;
+      img.alt = p.name;
+      img.onclick = () => this.selectNewUserPreset(p.url, img, true);
+      container.appendChild(img);
+    });
+  },
+
+  selectNewUserPreset(url, el, manual = true) {
+    this.selectedNewUserPfp = url;
+    if (manual) this.isNewUserCustomUploaded = false;
+    
+    const previewImg = document.getElementById('new-user-pfp-preview');
+    if (previewImg) previewImg.src = url;
+
+    const urlInput = document.getElementById('new-user-pfp-url');
+    if (urlInput) urlInput.value = url.startsWith('data:') ? '' : url;
+
+    document.querySelectorAll('.new-user-preset').forEach(i => {
+      if (i.src === url || (el && i === el)) i.classList.add('selected');
+      else i.classList.remove('selected');
+    });
+  },
+
+  async handleNewUserPfpFileUpload(input) {
+    const file = input.files?.[0];
+    if (file) {
+      try {
+        CRMGMT.toast('Optimizing photo...', 'info');
+        const dataUrl = await CRMGMT.compressImageFile(file, 256, 256, 0.85);
+        this.selectedNewUserPfp = dataUrl;
+        this.isNewUserCustomUploaded = true;
+        const previewImg = document.getElementById('new-user-pfp-preview');
+        if (previewImg) previewImg.src = dataUrl;
+        document.querySelectorAll('.new-user-preset').forEach(i => i.classList.remove('selected'));
+        const urlInput = document.getElementById('new-user-pfp-url');
+        if (urlInput) urlInput.value = '';
+        CRMGMT.toast('Photo selected!', 'success');
+      } catch (err) {
+        CRMGMT.toast(err.message || 'Failed to load image.', 'error');
+      }
+    }
+  },
+
+  handleNewUserPfpUrlChange(url) {
+    if (url && url.trim().length > 5) {
+      this.selectedNewUserPfp = url.trim();
+      this.isNewUserCustomUploaded = true;
+      const previewImg = document.getElementById('new-user-pfp-preview');
+      if (previewImg) previewImg.src = this.selectedNewUserPfp;
+      document.querySelectorAll('.new-user-preset').forEach(i => {
+        if (i.src === this.selectedNewUserPfp) i.classList.add('selected');
+        else i.classList.remove('selected');
+      });
     }
   },
 
@@ -344,7 +505,7 @@ const OperationsModule = {
       else if (u.role === 'enterprise_customer') roleBadge = 'badge-success';
 
       const isActive = u.is_active !== false;
-      const userPfp = CRMGMT.getPfp(u.id, u.role);
+      const userPfp = CRMGMT.getPfp(u.id, u.role, u);
 
       tr.innerHTML = `
         <td style="padding: 12px 16px; cursor: pointer;" onclick="OperationsModule.viewCustomerHistory('${u.id}')" title="Click to view complete order history & statistics">
@@ -498,7 +659,7 @@ const OperationsModule = {
     this.selectedHistoryUser = u;
 
     // Populate user profile info in Modal
-    const pfp = CRMGMT.getPfp(u.id, u.role);
+    const pfp = CRMGMT.getPfp(u.id, u.role, u);
     const avatarEl = document.getElementById('cust-hist-avatar');
     const nameEl = document.getElementById('cust-hist-name');
     const roleBadgeEl = document.getElementById('cust-hist-role-badge');
@@ -680,6 +841,7 @@ const OperationsModule = {
     const password = document.getElementById('new-user-password')?.value.trim() || 'Admin@123';
     const phone = document.getElementById('new-user-phone')?.value.trim() || '+91 98400 00000';
     const allocated_hub_id = document.getElementById('new-user-hub')?.value;
+    const avatar_url = this.selectedNewUserPfp || document.getElementById('new-user-pfp-url')?.value.trim();
 
     if (!full_name || !email) {
       CRMGMT.toast('Please enter both Full Name and Email.', 'warning');
@@ -688,10 +850,13 @@ const OperationsModule = {
 
     const res = await CRMGMT.api('/api/v1/admin/users/create', {
       method: 'POST',
-      body: JSON.stringify({ full_name, email, role, password, phone, allocated_hub_id })
+      body: JSON.stringify({ full_name, email, role, password, phone, allocated_hub_id, avatar_url })
     });
 
     if (res.data && res.data.success) {
+      if (res.data.user && avatar_url) {
+        CRMGMT.setPfp(res.data.user.id, avatar_url, false);
+      }
       CRMGMT.toast(`Successfully provisioned: ${full_name} (${role})`, 'success');
       this.closeModal('modal-create-user');
       this.loadUsers();

@@ -55,13 +55,13 @@ HUBS = [
 ]
 
 USERS = [
-    {"id": "u0000000-0000-0000-0000-000000000001", "email": "admin@crmgmt.io", "role": "super_admin", "full_name": "Naresh S (SIMATS Chief Systems Administrator)", "phone": "+91 98400 11223", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_master_key_8f3a9e22", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
-    {"id": "u0000000-0000-0000-0000-000000000002", "email": "hub.chennai@crmgmt.io", "role": "hub_manager", "full_name": "Karthik Ramaswamy (Chennai Hub Operations Lead)", "phone": "+91 98401 22334", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_hub_che_key_44b1c", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
-    {"id": "u0000000-0000-0000-0000-000000000003", "email": "agent.che01@crmgmt.io", "role": "delivery_agent", "full_name": "Vigneshwaran M (Fleet Dispatch Agent)", "phone": "+91 98402 33445", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_agent_che_12345", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
-    {"id": "u0000000-0000-0000-0000-000000000004", "email": "enterprise@saveetha.com", "role": "enterprise_customer", "full_name": "Dr. Meenakshi Sundaram (Saveetha BioMed Procurement)", "phone": "+91 98403 44556", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_ent_sav_99a8b7", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
-    {"id": "u0000000-0000-0000-0000-000000000005", "email": "ananya.sharma@gmail.com", "role": "standard_customer", "full_name": "Ananya Sharma (Retail Consignee & Client)", "phone": "+91 98404 55667", "password": "User@123", "allocated_hub_id": None, "api_key": None, "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
-    {"id": "u0000000-0000-0000-0000-000000000006", "email": "rajesh.verma@infosys.com", "role": "enterprise_customer", "full_name": "Rajesh Verma (VP Supply Chain, Infosys)", "phone": "+91 98110 33441", "password": "User@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000002", "api_key": "crm_ent_inf_88c42a", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
-    {"id": "u0000000-0000-0000-0000-000000000007", "email": "arvind.swaminathan@apollo.org", "role": "standard_customer", "full_name": "Dr. Arvind Swaminathan (Apollo Hospitals)", "phone": "+91 98840 99887", "password": "User@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": None, "is_active": True, "created_at": "2026-08-30T00:00:00Z"}
+    {"id": "u0000000-0000-0000-0000-000000000001", "email": "admin@crmgmt.io", "role": "super_admin", "full_name": "Naresh S (SIMATS Chief Systems Administrator)", "phone": "+91 98400 11223", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_master_key_8f3a9e22", "avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
+    {"id": "u0000000-0000-0000-0000-000000000002", "email": "hub.chennai@crmgmt.io", "role": "hub_manager", "full_name": "Karthik Ramaswamy (Chennai Hub Operations Lead)", "phone": "+91 98401 22334", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_hub_che_key_44b1c", "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
+    {"id": "u0000000-0000-0000-0000-000000000003", "email": "agent.che01@crmgmt.io", "role": "delivery_agent", "full_name": "Vigneshwaran M (Fleet Dispatch Agent)", "phone": "+91 98402 33445", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_agent_che_12345", "avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
+    {"id": "u0000000-0000-0000-0000-000000000004", "email": "enterprise@saveetha.com", "role": "enterprise_customer", "full_name": "Dr. Meenakshi Sundaram (Saveetha BioMed Procurement)", "phone": "+91 98403 44556", "password": "Admin@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": "crm_ent_sav_99a8b7", "avatar_url": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
+    {"id": "u0000000-0000-0000-0000-000000000005", "email": "ananya.sharma@gmail.com", "role": "standard_customer", "full_name": "Ananya Sharma (Retail Consignee & Client)", "phone": "+91 98404 55667", "password": "User@123", "allocated_hub_id": None, "api_key": None, "avatar_url": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
+    {"id": "u0000000-0000-0000-0000-000000000006", "email": "rajesh.verma@infosys.com", "role": "enterprise_customer", "full_name": "Rajesh Verma (VP Supply Chain, Infosys)", "phone": "+91 98110 33441", "password": "User@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000002", "api_key": "crm_ent_inf_88c42a", "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"},
+    {"id": "u0000000-0000-0000-0000-000000000007", "email": "arvind.swaminathan@apollo.org", "role": "standard_customer", "full_name": "Dr. Arvind Swaminathan (Apollo Hospitals)", "phone": "+91 98840 99887", "password": "User@123", "allocated_hub_id": "a0000000-0000-0000-0000-000000000001", "api_key": None, "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80", "is_active": True, "created_at": "2026-08-30T00:00:00Z"}
 ]
 
 SHIPMENTS = [
@@ -122,7 +122,16 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         # REST API Routes
         if path == '/api/v1/auth/me':
-            self._send_json({"success": True, "user": USERS[0]})
+            auth_hdr = self.headers.get('Authorization', '')
+            user = None
+            if 'jwt_' in auth_hdr:
+                token_parts = auth_hdr.replace('Bearer ', '').split('_')
+                if len(token_parts) >= 2:
+                    uid = token_parts[1]
+                    user = next((u for u in USERS if u["id"] == uid), None)
+            if not user:
+                user = USERS[0]
+            self._send_json({"success": True, "user": user})
             return
 
         if path == '/api/v1/admin/analytics':
@@ -260,19 +269,58 @@ class RequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == '/api/v1/auth/register':
+            role = payload.get('role', 'standard_customer')
+            default_pfp = "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80"
+            if role == 'hub_manager':
+                default_pfp = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
+            elif role == 'delivery_agent':
+                default_pfp = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"
+            elif role == 'enterprise_customer':
+                default_pfp = "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80"
+
             new_u = {
                 "id": f"u{len(USERS)+1:08d}",
                 "email": payload.get('email'),
                 "full_name": payload.get('full_name', 'Customer'),
-                "role": payload.get('role', 'standard_customer'),
+                "role": role,
                 "phone": payload.get('phone', ''),
                 "allocated_hub_id": payload.get('allocated_hub_id'),
                 "api_key": f"crm_key_{random.randint(10000, 99999)}",
+                "avatar_url": payload.get('avatar_url') or default_pfp,
                 "is_active": True,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
             }
             USERS.append(new_u)
-            self._send_json({"success": True, "token": f"jwt_{new_u['id']}", "user": new_u})
+            self._send_json({"success": True, "token": f"jwt_{new_u['id']}_{int(time.time())}", "user": new_u})
+            return
+
+        if path == '/api/v1/auth/pfp':
+            user_id = payload.get('user_id')
+            avatar_url = payload.get('avatar_url')
+            if not avatar_url:
+                self._send_json({"success": False, "error": "Missing avatar_url."}, 400)
+                return
+
+            user = None
+            if user_id:
+                user = next((u for u in USERS if u["id"] == user_id), None)
+            if not user:
+                auth_hdr = self.headers.get('Authorization', '')
+                if 'jwt_' in auth_hdr:
+                    token_parts = auth_hdr.replace('Bearer ', '').split('_')
+                    if len(token_parts) >= 2:
+                        uid = token_parts[1]
+                        user = next((u for u in USERS if u["id"] == uid), None)
+            if not user:
+                user = USERS[0]
+
+            user['avatar_url'] = avatar_url
+            self._send_json({
+                "success": True,
+                "message": "Profile picture updated successfully.",
+                "avatar_url": user['avatar_url'],
+                "user": user
+            })
             return
 
         if path == '/api/v1/admin/users/create':
@@ -288,6 +336,16 @@ class RequestHandler(BaseHTTPRequestHandler):
             hub_id = payload.get('allocated_hub_id', HUBS[0]["id"] if role in ['hub_manager', 'delivery_agent'] else None)
             api_key = f"crm_{role[:3]}_{random.randint(10000, 99999)}"
 
+            default_pfp = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
+            if role == 'hub_manager':
+                default_pfp = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
+            elif role == 'delivery_agent':
+                default_pfp = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"
+            elif role == 'enterprise_customer':
+                default_pfp = "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80"
+            elif role == 'standard_customer':
+                default_pfp = "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80"
+
             new_user = {
                 "id": f"u{len(USERS)+1:08d}",
                 "email": email,
@@ -297,6 +355,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 "password": pwd,
                 "allocated_hub_id": hub_id,
                 "api_key": api_key,
+                "avatar_url": payload.get('avatar_url') or default_pfp,
                 "is_active": True,
                 "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
             }
@@ -336,7 +395,9 @@ class RequestHandler(BaseHTTPRequestHandler):
                     user['role'] = payload['role'].strip()
                 if 'allocated_hub_id' in payload:
                     user['allocated_hub_id'] = payload['allocated_hub_id']
-                
+                if 'avatar_url' in payload and payload['avatar_url']:
+                    user['avatar_url'] = payload['avatar_url'].strip()
+
                 self._send_json({
                     "success": True,
                     "message": f"Successfully updated profile for {user['full_name']}",

@@ -12,7 +12,7 @@ extern "C" {
 int auth_login(const char *email, const char *password, char *token_out, size_t token_len, UserRecord **user_out);
 
 // Register a new user
-int auth_register(const char *email, const char *password, const char *full_name, const char *phone, UserRole role, const char *hub_id, char *token_out, size_t token_len, UserRecord **user_out);
+int auth_register(const char *email, const char *password, const char *full_name, const char *phone, UserRole role, const char *hub_id, const char *avatar_url, char *token_out, size_t token_len, UserRecord **user_out);
 
 // Generate JWT token for user
 int auth_create_jwt(const UserRecord *user, const char *secret, char *token_out, size_t token_len);

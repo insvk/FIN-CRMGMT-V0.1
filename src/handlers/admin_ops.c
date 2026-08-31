@@ -88,7 +88,7 @@ cJSON *handle_admin_user_list(const UserRecord *caller) {
     return response;
 }
 
-cJSON *handle_admin_user_create(const UserRecord *caller, const char *email, const char *name, const char *role_str, const char *phone, const char *hub_id, const char *password) {
+cJSON *handle_admin_user_create(const UserRecord *caller, const char *email, const char *name, const char *role_str, const char *phone, const char *hub_id, const char *password, const char *avatar_url) {
     (void)caller;
     cJSON *response = cJSON_CreateObject();
     if (!email || !name) {
@@ -106,6 +106,7 @@ cJSON *handle_admin_user_create(const UserRecord *caller, const char *email, con
     snprintf(new_user.role_name, sizeof(new_user.role_name), "%s", role_to_string(new_user.role));
     if (phone) snprintf(new_user.phone, sizeof(new_user.phone), "%s", phone);
     if (hub_id) snprintf(new_user.allocated_hub_id, sizeof(new_user.allocated_hub_id), "%s", hub_id);
+    if (avatar_url) snprintf(new_user.avatar_url, sizeof(new_user.avatar_url), "%s", avatar_url);
     snprintf(new_user.api_key, sizeof(new_user.api_key), "crm_%s_%04X", role_str ? role_str : "usr", rand() % 0xFFFF);
     new_user.is_active = true;
 

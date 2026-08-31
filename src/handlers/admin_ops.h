@@ -19,7 +19,7 @@ cJSON *handle_admin_status_override(const UserRecord *caller, const char *shipme
 
 // User Management
 cJSON *handle_admin_user_list(const UserRecord *caller);
-cJSON *handle_admin_user_create(const UserRecord *caller, const char *email, const char *name, const char *role_str, const char *phone, const char *hub_id, const char *password);
+cJSON *handle_admin_user_create(const UserRecord *caller, const char *email, const char *name, const char *role_str, const char *phone, const char *hub_id, const char *password, const char *avatar_url);
 
 // Retrieve system audit logs
 cJSON *handle_admin_audit_logs(const UserRecord *caller, int limit);

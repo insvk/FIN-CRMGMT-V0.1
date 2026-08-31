@@ -276,12 +276,74 @@ const CRMGMT = {
     }
   },
 
+  // Curated Preset Avatars
+  curatedPresets: [
+    { name: 'Executive Administrator', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80', role: 'super_admin' },
+    { name: 'Chief Systems Architect', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&auto=format&fit=crop&q=80', role: 'super_admin' },
+    { name: 'Hub Operations Manager', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&auto=format&fit=crop&q=80', role: 'hub_manager' },
+    { name: 'Hub Logistics Lead', url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&auto=format&fit=crop&q=80', role: 'hub_manager' },
+    { name: 'Fleet Dispatch Agent', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&auto=format&fit=crop&q=80', role: 'delivery_agent' },
+    { name: 'Express Delivery Driver', url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=160&auto=format&fit=crop&q=80', role: 'delivery_agent' },
+    { name: 'Healthcare Procurement Lead', url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=160&auto=format&fit=crop&q=80', role: 'enterprise_customer' },
+    { name: 'Enterprise Corporate Client', url: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=160&auto=format&fit=crop&q=80', role: 'enterprise_customer' },
+    { name: 'Retail Consignee & Client', url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&auto=format&fit=crop&q=80', role: 'standard_customer' },
+    { name: 'Client Logistics Liaison', url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=160&auto=format&fit=crop&q=80', role: 'standard_customer' },
+    { name: 'Saveetha BioMed Specialist', url: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=160&auto=format&fit=crop&q=80', role: 'enterprise_customer' },
+    { name: 'Global Supply Analyst', url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&auto=format&fit=crop&q=80', role: 'standard_customer' }
+  ],
+
+  // Client-side image compression & square cropping
+  compressImageFile(file, maxWidth = 256, maxHeight = 256, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith('image/')) {
+        return reject(new Error('Please select a valid image file.'));
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const minDim = Math.min(img.width, img.height);
+          const startX = (img.width - minDim) / 2;
+          const startY = (img.height - minDim) / 2;
+
+          canvas.width = Math.min(maxWidth, minDim);
+          canvas.height = Math.min(maxHeight, minDim);
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, canvas.width, canvas.height);
+
+          try {
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          } catch (err) {
+            resolve(e.target.result);
+          }
+        };
+        img.onerror = () => reject(new Error('Failed to load image.'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file.'));
+      reader.readAsDataURL(file);
+    });
+  },
+
   // Profile Picture (PFP) Manager
-  getPfp(userId, role) {
+  getPfp(userId, role, userObj) {
+    if (userObj && userObj.avatar_url) return userObj.avatar_url;
     try {
       const pfps = JSON.parse(localStorage.getItem('crmgmt_custom_pfps') || '{}');
       if (userId && pfps[userId]) return pfps[userId];
     } catch(e) {}
+
+    if (userId && this.state.currentUser && this.state.currentUser.id === userId && this.state.currentUser.avatar_url) {
+      return this.state.currentUser.avatar_url;
+    }
+
+    if (window.OperationsModule && window.OperationsModule.users) {
+      const u = window.OperationsModule.users.find(x => x.id === userId);
+      if (u && u.avatar_url) return u.avatar_url;
+    }
 
     // Default curated avatars
     if (role === 'hub_manager') return 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80';
@@ -291,14 +353,36 @@ const CRMGMT = {
     return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
   },
 
-  setPfp(userId, pfpUrl) {
+  async setPfp(userId, pfpUrl, syncToServer = true) {
     if (!userId || !pfpUrl) return;
     try {
       const pfps = JSON.parse(localStorage.getItem('crmgmt_custom_pfps') || '{}');
       pfps[userId] = pfpUrl;
       localStorage.setItem('crmgmt_custom_pfps', JSON.stringify(pfps));
     } catch(e) {}
+
+    if (this.state.currentUser && (this.state.currentUser.id === userId || !userId)) {
+      this.state.currentUser.avatar_url = pfpUrl;
+      localStorage.setItem('crmgmt_user', JSON.stringify(this.state.currentUser));
+    }
+
+    if (window.OperationsModule && window.OperationsModule.users) {
+      const u = window.OperationsModule.users.find(x => x.id === userId);
+      if (u) u.avatar_url = pfpUrl;
+    }
+
     this.updateUserUI();
+
+    if (syncToServer) {
+      try {
+        await this.api('/api/v1/auth/pfp', {
+          method: 'POST',
+          body: JSON.stringify({ user_id: userId, avatar_url: pfpUrl })
+        });
+      } catch (err) {
+        console.warn('Could not sync avatar to server:', err);
+      }
+    }
   },
 
   updateUserUI() {
@@ -310,7 +394,7 @@ const CRMGMT = {
     document.querySelectorAll('.user-email-display').forEach(el => el.textContent = u.email);
 
     // Update Profile Picture
-    const activePfp = this.getPfp(u.id, u.role);
+    const activePfp = this.getPfp(u.id, u.role, u);
     document.querySelectorAll('.sidebar-avatar, .nav-avatar-img, .current-user-avatar').forEach(el => {
       el.src = activePfp;
     });

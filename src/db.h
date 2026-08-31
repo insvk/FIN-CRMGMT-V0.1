@@ -61,6 +61,7 @@ typedef struct {
     char phone[64];
     char allocated_hub_id[MAX_UUID_LEN];
     char api_key[MAX_STR_LEN];
+    char avatar_url[MAX_TEXT_LEN];
     bool is_active;
     char created_at[64];
 } UserRecord;
@@ -143,6 +144,7 @@ UserRecord *db_find_user_by_email(const char *email);
 UserRecord *db_find_user_by_id(const char *user_id);
 UserRecord *db_find_user_by_api_key(const char *api_key);
 int db_create_user(UserRecord *new_user);
+int db_update_user_pfp(const char *user_id, const char *avatar_url);
 
 // Shipment Queries
 cJSON *db_get_shipments_json(const char *status_filter, const char *hub_filter, const char *customer_id, const char *agent_id);
